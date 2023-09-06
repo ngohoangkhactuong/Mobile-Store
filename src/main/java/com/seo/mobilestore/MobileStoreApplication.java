@@ -6,8 +6,8 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
 @EnableScheduling
-public class FindInternshipApplication {
+public class MobileStoreApplication {
 	public static void main(String[] args) {
-		SpringApplication.run(FindInternshipApplication.class, args);
+		SpringApplication.run(MobileStoreApplication.class, args);
 	}
 }
