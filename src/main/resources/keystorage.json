@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "platinum-tracer-362404",
+  "private_key_id": "7ebf4afa762bf852937fd53e26ff433991845ebf",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDAGAto+9QHoJJA\nJdsWXQjVnHsB8QyVXJt6AomZXHtiRKC1BRYtzeOdxlohyb+oLpza9hPk1xYao8hv\nwONWkHBENbu0hik59m18y31e+aZAabZn/5drVqs2V/xMKv5LW1W6MX2kowDVMJ7c\n0UIFQc5HtZ+YbDp5owa1RraKjggsN3SJR3h0mmQMbkrt6/wOYJ4IKIovBozQJbuL\nMmMk0oP6aTx46h5t+O1LCqq7G496MewOD+4XmX8IpPRanVKHSBGDkGNEmd9VQ5fX\nnAR1FP3+4SZpv0wWLzMIpA/9S8/gb5nyYsM4X0aC98QH4FAzjBCs31eqOU1OjJW3\n3hrwdYtVAgMBAAECggEAGAN5e66Nj0WIuumwlX9cYR3Od8vrO4nH6u0ByBD6YKq9\nH1wLLX8xTvIypsoqgisPk0TTcFZeDkb+wc+ua84jJrfD5xmlcjhG8CSdH+AcIy3D\n7oTSaEn9nc3KfbgbMY7xrNTOhOQWsNAC8A5dzzvufmLrWFnhRn71kfhMzg3a4jH1\nnso7nJVaTrN/YC9MuPcX7EdCZt5dv9ZdqUR6WV+XhO41WQEWnAZzkIFp5twaFDKh\nbp+LnNUYg9QOH8CilxdnwwKUlt8/pchQ4dnwkzISA6dJeAXU8B+bBVKAk0IwzUIM\nrRFdZcWfAwM00zfh+efv6MfqQ3zwdgQJIlPsXWpHuQKBgQD8kMZBylPbZARB5m3/\nRAzusEdp919TczGwrKQ6/7+48jNFEx47fORm5G+IkElZcW0l2+knSn1DkQeeRu2P\nE5wLbVKl87pLnQUmjkEJffsgLNmW6MTFEMqNq096GMqos4wsPFRKZSKk0/up217E\neMwiKQEhnzjuTHmZ+rpBxEdNXQKBgQDCtMH57ys0K/aDHywHc/Uuc+0Cf1NmYkT+\n+8Rb8Qx8CeIbI0H1Q74ZtX91jq3XYJcKOobCqi9iPVAkRGSMeSXuZ3kZIRn+MX/k\nb1GDxs/V4GzQJvw7S4anadwbiUkqATukK9diZKsS00OBzK4hIPA63FWK48mqsqjf\nBuepCpneWQKBgQCQHL+zfJJaxfgT7jrng9npPFaTZV5UTI+W4vuW2qV4D2Mnz9/Z\nS8s71q65erMPwUPpbVDdZYiSTCfPrWMR17ubXZbiMG8lhAQTWupLU0I+urixfkIA\nvDMHoS9pWMoSdtjNyOLDzG93I6oe4phxfQflmgYWPDcM6kAcl08+BZQ11QKBgCPn\nWyGwhcIAHVv+gor5Sgv/2oOsYP+vPVPbr1DY+VliJSyl6sLEdCiffFp8LfhaWl/L\nfRAme8hc0AtwBS6WJHV65SzKGtXx4MiJ8nkfTzH8SXR0y+xPOAxlC+6T+UbipVHX\nt8bwE0/MX1VvHekD/uiLusZ6zLRKb7N4vX1BdDA5AoGAHyFgoytJoA/qt6dcaUdQ\nZLS3ykWCw3Pd9GX410K2WVaffGnHpiMWIQHpkjICiTzwysO7sTKpO2URnyQTDh6Q\n0AAweBY+PKiQQ9oGufHOaURyyUXrvWgRPRHxDH95WVccLBy8Z45UTheFf5fDLIXA\nL9QCr/+xogJYYlT+wmoPD5Y=\n-----END PRIVATE KEY-----\n",
+  "client_email": "r2s-store@platinum-tracer-362404.iam.gserviceaccount.com",
+  "client_id": "116865391677072472703",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/r2s-store%40platinum-tracer-362404.iam.gserviceaccount.com"
+}

@@ -1,0 +1,89 @@
+spring:
+  main:
+    allow-circular-references: true
+
+  profiles:
+    active: dev
+  jackson:
+    time-zone: GMT+7
+    serialization:
+      fail-on-empty-beans: false
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    properties:
+      hibernate:
+        current_session_context_class: org.springframework.orm.hibernate5.SpringSessionContext
+        dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+        format_sql: true
+        jdbc.time_zone: GMT+7
+    show-sql: true
+
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            clientId: 1000127656396-rvof6jb1i801bo1qkngiejnof1h06nl7.apps.googleusercontent.com
+            clientSecret: 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
+#            clientId: 933805166019-eooik5chr2fpvpqlacjpq5q0qfrio7qr.apps.googleusercontent.com
+#            clientSecret: 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
+            scope:
+              - email
+              - profile
+          facebook:
+            clientId: 1297180727585659
+            clientSecret: 2b4eac8be7274867c49174bf8d15089b
+#            clientId: 247027257918761
+#            clientSecret: 6e2f8fd2a7b20b841f7444f8820ff846
+            scope:
+              - email
+              - public_profile
+  #File
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
+  #MAIL SENDER
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: r2sinternship@gmail.com
+    password: oimacwkaclsebydc
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+  cloud:
+    gcp:
+      project-id: platinum-tracer-362404
+      credentials:
+        location: classpath:keystorage.json
+# JWT UTIL
+r2s:
+  jwtSecret: r2SSecretKey
+  jwtExpirationMs: 18000000
+  jwtRefesh: 604800000
+  #File excel version
+  excelVersion: "0.0.0.1"
+
+# Firebase
+url:
+  firebase:
+    bucket: storageimg-36153.appspot.com
+    folder: https://firebasestorage.googleapis.com/v0/b/
+  profiles:
+    active: dev
+logging:
+  config: path/logback-spring.xml
+
+# Store file on server
+file:
+  path: path/files
+

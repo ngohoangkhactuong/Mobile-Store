@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <include resource="org/springframework/boot/logging/logback/defaults.xml" />
+  <!--   <property name="LOG_FILE" value="logs/application.log"/> -->
+    <include resource="org/springframework/boot/logging/logback/file-appender.xml" />
+  
+  <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <pattern>
+        
+        [%d{yyyy-MM-dd HH:mm:ss:SSS}] [%thread] [%-5level] %logger{36} - %msg%n
+      </pattern>
+    </encoder>
+  </appender>   
+     <root level="INFO">
+        <appender-ref ref="STDOUT" />
+    </root>
+
+
+    <appender name="info" class="ch.qos.logback.core.FileAppender">
+        <file>logs/info.log</file>
+        <encoder>
+            <pattern>[%d{yyyy-MM-dd HH:mm:ss:SSS}] [%thread] [%-5level] %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="warn" class="ch.qos.logback.core.FileAppender">
+        <file>logs/warn.log</file>
+        <encoder>
+            <pattern>[%d{yyyy-MM-dd HH:mm:ss:SSS}] [%thread] [%-5level] %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+    <appender name="exception" class="ch.qos.logback.core.FileAppender">
+        <file>logs/exception.log</file>
+        <encoder>
+            <pattern>[%d{yyyy-MM-dd HH:mm:ss:SSS}] [%thread] [%-5level] %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <logger name="info" level="INFO" additivity="false">
+        <appender-ref ref="info" />
+    </logger>
+
+    <logger name="warn" level="WARN" additivity="false">
+        <appender-ref ref="warn" />
+    </logger>
+    <logger name="exception" level="ALL" additivity="false">
+        <appender-ref ref="exception" />
+    </logger>
+
+</configuration>

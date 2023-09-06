@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+	<!-- Include logback default configure -->
+	<include
+		resource="org/springframework/boot/logging/logback/base.xml" />
+
+	<!-- Khai bao bien -->
+	<property name="LOG_PATTERN"
+		value="[%d{yyyy-MM-dd HH:mm:ss}] [%thread] [%-5level] Message: %msg%n" />
+	<property name="APP_LOG_ROOT" value="./src/main/resources/logs" />
+	<property name="DATE" value="%d{yyyy-MM-dd}" />
+
+	<!-- Show Console START -->
+	<appender name="console"
+		class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>${LOG_PATTERN}</pattern>
+		</encoder>
+	</appender>
+
+	<root level="info">
+		<appender-ref ref="console" />
+	</root>
+	<!-- Show Console END -->
+	<!-- Config log info START -->
+	<appender name="InfoLog"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+
+		<encoder
+			class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+			<Pattern>
+				${LOG_PATTERN}
+			</Pattern>
+		</encoder>
+
+		<rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${APP_LOG_ROOT}/${DATE}/info-log-%i.log</fileNamePattern>
+             <!--total amount of time the logs are kept, after that the oldest log will be deleted, default value 0 = never delete -->
+            <maxHistory>0</maxHistory>
+            <!--total size of all log files, after that oldest file will be deleted, default value 0 = no cap-->
+            <totalSizeCap>0</totalSizeCap>
+            <!-- max size of a log, if log is bigger than max size, create new log file with %i+1 -->
+            <maxFileSize>10MB</maxFileSize>
+        </rollingPolicy>
+	</appender>
+	<logger name="info" level="INFO" additivity="false">
+        <appender-ref ref="InfoLog" />
+    </logger>
+    <!-- Config log info END -->
+    <!-- Config log warn START -->
+    <appender name="ErrorLog" class="ch.qos.logback.core.rolling.RollingFileAppender">
+
+		<encoder
+			class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+			<Pattern>
+				${LOG_PATTERN}
+			</Pattern>
+		</encoder>
+
+		<rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${APP_LOG_ROOT}/${DATE}/warn-log-%i.log</fileNamePattern>
+            <maxHistory>0</maxHistory>
+            <totalSizeCap>0</totalSizeCap>
+            <maxFileSize>10MB</maxFileSize>
+        </rollingPolicy>
+	</appender>
+	<logger name="warn" level="WARN" additivity="false">
+        <appender-ref ref="ErrorLog" />
+    </logger>
+    <!-- Config log warn STOP -->
+</configuration>

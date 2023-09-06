@@ -1,0 +1,21 @@
+server:
+  port: 8085
+db:
+  port: 3306
+  name: mobilestore
+  endpoint: localhost
+  username: root
+  password: Tuong14236
+
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://${db.endpoint}:${db.port}/${db.name}
+    username: ${db.username}
+    password: ${db.password}
+url:
+  redirect:
+    path: ${domain.path}
+domain:
+  path: http://localhost:3000
