@@ -20,8 +20,6 @@ public interface UserService extends UserDetailsService {
 
     String checkStatusUser(Status status);
 
-//    boolean changePassword(ChangePasswordDTO changePasswordDTO);
-
     boolean changePasswordByToken(ChangePasswordDTO changePasswordDTO);
 
     boolean checkValidOldPassword(String oldPass, String newPass);

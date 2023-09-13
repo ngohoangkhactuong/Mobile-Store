@@ -1,15 +1,14 @@
 package com.seo.mobilestore.data.repository;
 
-import com.seo.mobilestore.data.entity.Role;
+import com.seo.mobilestore.data.entity.Categories;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface RoleRepository extends JpaRepository<Role, Integer> {
+public interface CategoriesRepository extends JpaRepository<Categories, Long> {
 
     boolean existsByName(String name);
 
-    Optional<Role> findByName(String name);
-
+    Optional<Categories> findById(long id);
 }
