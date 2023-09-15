@@ -14,4 +14,17 @@ public interface SeriService {
 
     List<SeriDTO> createProductSeri(Product product, List<SeriDTO> seriDTOs);
 
+    List<SeriDTO> updateProductSeri(Product product, List<SeriDTO> seriDTOs);
+
+    MessageResponse create(SeriProductDTO seriDTO);
+
+    boolean deletedByID(long id);
+
+    SeriProductDTO update(long seriID , SeriProductDTO seriProductDTO);
+
+    SeriDTO getById(long id);
+
+    PaginationDTO getAllPagination(int no, int limit);
+
+
 }

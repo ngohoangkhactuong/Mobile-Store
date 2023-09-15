@@ -1,4 +1,4 @@
-package com.seo.mobilestore.controller.product;
+package com.seo.mobilestore.controller.product.manufacturer;
 
 import com.seo.mobilestore.constant.ApiURL;
 import com.seo.mobilestore.data.dto.product.ProductDTO;

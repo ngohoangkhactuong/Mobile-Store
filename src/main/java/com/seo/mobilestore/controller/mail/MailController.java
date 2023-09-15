@@ -1,4 +1,4 @@
-package com.seo.mobilestore.controller;
+package com.seo.mobilestore.controller.mail;
 
 import com.seo.mobilestore.constant.ApiURL;
 import com.seo.mobilestore.service.MailService;
@@ -16,20 +16,11 @@ public class MailController {
     @Autowired
     private UserService userService;
 
-    /**
-     * Method send mail active to user account
-     * @param email
-     * @return Returns an "ok" response if the address update is successful
-     */
     @GetMapping("/active-user")
     public ResponseEntity<?> sendMailActive(@RequestParam String email) {
         return ResponseEntity.ok(mailService.sendMailActive(email));
     }
 
-    /**
-     * Method send mail otp for change password to user account
-     * @return Returns an "ok" response if the address update is successful
-     */
     @GetMapping("/forgot-password/{email}")
     public ResponseEntity<?> forgotPassword(@PathVariable String email) {
         return ResponseEntity.ok(mailService.sendMailForgotPassword(email));

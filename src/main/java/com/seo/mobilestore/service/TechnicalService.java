@@ -12,4 +12,11 @@ public interface TechnicalService {
 
     TechnicalDTO create(String name);
 
+    TechnicalDTO update(int id, TechnicalDTO technicalDTO);
+
+    TechnicalDTO getById(int id);
+
+    PaginationDTO getAllPagination(int no, int limit);
+
+
 }
