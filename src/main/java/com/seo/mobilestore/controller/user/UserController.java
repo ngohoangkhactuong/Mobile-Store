@@ -1,4 +1,4 @@
-package com.seo.mobilestore.controller;
+package com.seo.mobilestore.controller.user;
 
 import com.seo.mobilestore.common.MessageResponse;
 import com.seo.mobilestore.constant.ApiURL;
