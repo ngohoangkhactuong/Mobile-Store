@@ -7,4 +7,8 @@ import java.util.List;
 
 public interface ImageService {
     List<ImageDTO> createProductImage(Product product, List<ImageDTO> imageDTOs);
+
+    ImageDTO create(ImageDTO imageDTO);
+
+    List<ImageDTO> updateProductImage(Product product, List<ImageDTO> imageDTOs);
 }
