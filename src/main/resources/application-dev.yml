@@ -2,7 +2,7 @@ server:
   port: 8085
 db:
   port: 3306
-  name: mobilestore
+  name: mobilestore_seo
   endpoint: localhost
   username: root
   password:
