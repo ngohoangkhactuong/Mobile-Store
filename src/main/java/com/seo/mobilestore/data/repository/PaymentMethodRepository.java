@@ -14,7 +14,7 @@ import java.util.Optional;
 public interface PaymentMethodRepository extends JpaRepository<PaymentMethod, Long> {
     boolean existsByName(String name);
 
-    PaymentMethod findByName(String name);
+    Optional<PaymentMethod> findByName(String name);
 
     @Query("Select p from PaymentMethod p Where p.status = true and p.id = :id")
     Optional<PaymentMethod> findByIdPagement(long id);

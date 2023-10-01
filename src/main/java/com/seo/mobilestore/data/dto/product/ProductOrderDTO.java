@@ -17,6 +17,5 @@ public class ProductOrderDTO {
     private String memory;
     private String color;
     private String seri;
-
 }
 
