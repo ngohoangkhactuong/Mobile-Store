@@ -124,24 +124,8 @@ public class UserServiceImpl implements UserService {
         return UserDetailsImpl.build(findByEmail(email));
     }
 
-    /**
-     * Method find user by id
-     *
-     * @param id
-     * @return show UserDTO if success
-     */
     @Override
     public UserDTO findById(long id) {
-        String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        User user = this.userRepository.findByEmail(email).orElseThrow(() ->
-                new ResourceNotFoundException(Collections.singletonMap("email", email)));
-
-        int emptyCheck = -1;
-        if (id == emptyCheck)
-            throw new ValidationException(Collections.singletonMap("User id ", id));
-        else if (user.getId() != id)
-            throw new AccessDeniedException();
-
         return this.userMapper.toDTO(this.userRepository.findById(id).orElseThrow(() ->
                 new InternalServerErrorException(Collections.singletonMap(id, "Not found"))));
     }
@@ -252,7 +236,7 @@ public class UserServiceImpl implements UserService {
                         .orElseThrow(() -> new InternalServerErrorException(
                                 Collections.singletonMap("Role", ERole.Customer.toString()))));
 
-        user.setStatus(defaultStatus);
+        user.setStatus(true);
         user.setLock_status(defaultLockStatus);
 
         userRepository.save(user);
@@ -457,4 +441,6 @@ public class UserServiceImpl implements UserService {
         }
         return message;
     }
+
+
 }

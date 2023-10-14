@@ -31,14 +31,8 @@ public class UserController {
     @Autowired
     private MailService mailService;
 
-    /**
-     * Method find user by id
-     *
-     * @param id
-     * @return show UserDTO if had found id user in data
-     */
     @SecurityRequirement(name = "Bearer Authentication")
-    @PreAuthorize("hasAuthority('Role_Customer')")
+    @PreAuthorize("hasAuthority('Role_Admin')")
     @GetMapping("/{id}")
     public ResponseEntity<?> getById(@PathVariable long id) {
         return ResponseEntity.ok(this.userService.findById(id));
