@@ -17,10 +17,6 @@ public class Color extends Auditable{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_id", nullable = false)
-    private Product product;
-
     @Column(name = "name", nullable = false, columnDefinition = "NVARCHAR(50)")
     private String name;
 

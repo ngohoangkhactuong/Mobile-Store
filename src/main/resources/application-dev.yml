@@ -2,7 +2,7 @@ server:
   port: 8085
 db:
   port: 3306
-  name: developer_mobilestore
+  name: mobilestore_fix
   endpoint: 54.254.250.88
   username: mobilestore.dev
   password: Mbs@12345

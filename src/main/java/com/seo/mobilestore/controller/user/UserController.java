@@ -31,19 +31,14 @@ public class UserController {
     @Autowired
     private MailService mailService;
 
-    @SecurityRequirement(name = "Bearer Authentication")
-    @PreAuthorize("hasAuthority('Role_Admin')")
+//    @SecurityRequirement(name = "Bearer Authentication")
+//    @PreAuthorize("hasAuthority('Role_Admin')")
     @GetMapping("/{id}")
     public ResponseEntity<?> getById(@PathVariable long id) {
         return ResponseEntity.ok(this.userService.findById(id));
     }
 
-    /**
-     * Method Create user
-     *
-     * @param userCreationDTO
-     * @return Returns an "ok" response if the address update is successful
-     */
+   /*Done*/
     @PostMapping("/")
     public ResponseEntity<?> create(@RequestBody UserCreationDTO userCreationDTO) {
         return new ResponseEntity<>(this.userService.create(userCreationDTO), HttpStatus.CREATED);
@@ -148,9 +143,7 @@ public class UserController {
 
     /**
      * Method lock user account
-     *
      * @param id
-     * @return
      */
     @SecurityRequirement(name = "Bearer Authentication")
     @PreAuthorize("hasAuthority('Role_Admin')")

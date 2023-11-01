@@ -1,6 +1,7 @@
 package com.seo.mobilestore.service.impl;
 
 import com.seo.mobilestore.data.dto.product.memory.MemoryDTO;
+import com.seo.mobilestore.data.dto.product.memory.MemoryProductDTO;
 import com.seo.mobilestore.data.entity.Memory;
 import com.seo.mobilestore.data.entity.Product;
 import com.seo.mobilestore.data.mapper.product.MemoryMapper;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 
 @Service
@@ -42,25 +44,40 @@ public class MemoryServiceImpl implements MemoryService {
     }
 
     @Override
-    public List<MemoryDTO> updateProductMemory(Product product, List<MemoryDTO> memoryDTOs){
+    public List<MemoryProductDTO> createProductMemoryCreation(Product product, List<MemoryProductDTO> memoryDTOs){
 
-        List<MemoryDTO> memoryDTOsResult = new ArrayList<>();
+        List<MemoryProductDTO> memoryDTOsRessult = new ArrayList<>();
+
+        memoryDTOs.forEach(memoryProductDTO -> {
+
+            Memory memory = memoryMapper.toMemoryEntity(memoryProductDTO);
+            memory.setProduct(product);
+
+            memoryDTOsRessult.add(memoryMapper.toMemoryDTO(memoryRepository.save(memory)));
+        });
+        return memoryDTOsRessult;
+    }
+
+    @Override
+    public List<MemoryProductDTO> updateProductMemory(Product product, List<MemoryProductDTO> memoryDTOs){
+
+        List<MemoryProductDTO> memoryDTOsResult = new ArrayList<>();
         List<Memory> memorys = memoryRepository.findByProductId(product.getId());
-        List<MemoryDTO> memoryDTOsPrepare = new ArrayList<>();
+        List<MemoryProductDTO> memoryDTOsPrepare = new ArrayList<>();
 
         memorys.forEach(memory -> {
-            memoryDTOsPrepare.add(memoryMapper.toDTO(memory));
-            if (!memoryDTOs.contains(memoryMapper.toDTO(memory))){
+            memoryDTOsPrepare.add(memoryMapper.toMemoryDTO(memory));
+            if (!memoryDTOs.contains(memoryMapper.toMemoryDTO(memory))){
                 // Update status = false (0) for memory when consumer delete this memory
                 memory.setStatus(false);
                 memoryRepository.save(memory);
             } else {
                 memoryDTOs.forEach(memoryDTO -> {
                     // if memory existed in database, it will be updated then save it
-                    if (memoryDTO.getId() == memory.getId()) {
-                        Memory memoryMapped=  memoryMapper.toEntity(memoryDTO);
+                    if (Objects.equals(memoryDTO.getName(), memory.getName())) {
+                        Memory memoryMapped=  memoryMapper.toMemoryEntity(memoryDTO);
                         memoryMapped.setProduct(product);
-                        memoryDTOsResult.add(memoryMapper.toDTO(memoryRepository.save(memoryMapped)));
+                        memoryDTOsResult.add(memoryMapper.toMemoryDTO(memoryRepository.save(memoryMapped)));
                     }
                 });
             }
@@ -69,10 +86,10 @@ public class MemoryServiceImpl implements MemoryService {
         // if existing new memory then save this memory into database
         memoryDTOs.forEach(memoryDTO -> {
             if (!memoryDTOsPrepare.contains(memoryDTO)) {
-                Memory memoryMapped=  memoryMapper.toEntity(memoryDTO);
+                Memory memoryMapped=  memoryMapper.toMemoryEntity(memoryDTO);
                 memoryMapped.setProduct(product);
                 Memory memorySaved = memoryRepository.save(memoryMapped);
-                memoryDTOsResult.add(memoryMapper.toDTO(memorySaved));
+                memoryDTOsResult.add(memoryMapper.toMemoryDTO(memorySaved));
             }
         });
 

@@ -1,8 +1,6 @@
 package com.seo.mobilestore.data.mapper;
 
-import com.seo.mobilestore.data.dto.order.OrderCreationDTO;
-import com.seo.mobilestore.data.dto.order.OrderDTO;
-import com.seo.mobilestore.data.dto.order.OrderDetailDTO;
+import com.seo.mobilestore.data.dto.order.*;
 import com.seo.mobilestore.data.entity.OrderDetails;
 import com.seo.mobilestore.data.entity.Orders;
 import com.seo.mobilestore.data.mapper.paymentMethod.PaymentMethodMapper;
@@ -32,5 +30,17 @@ public interface OrderMapper {
     @Mapping(ignore = true, target = "seri")
     @Mapping(ignore = true, target = "color")
     OrderDetails toDetailEnity(OrderDetailDTO orderDetailsDTO);
+
+    Orders toOrderUpdateEntity(OrderUpdateDTO orderUpdateDTO);
+
+
+    @Mapping(source = "id", target = "id")
+    @Mapping(source = "total", target = "total")
+    @Mapping(source = "receiveDate", target = "receiveDate")
+    @Mapping(source = "status", target = "statusDTO")
+    ShowOrderDTO toShowOrderDTO(Orders orders);
+
+    @Mapping(source = "orders", target = "orderDTO")
+    OrderDetailDTO toDetailDTO(OrderDetails orderDetails);
 
 }
