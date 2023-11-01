@@ -20,6 +20,6 @@ public interface UserMapper {
 	@Mapping(source = "role", target = "roleDTO")
 	@Mapping(source = "status", target = "statusDTO")
 	@Mapping(source = "lock_status", target = "lockStatusDTO")
+	@Mapping(source = "addressList" , target = "addressDTOS")
 	UserDTO toDTO(User user);
-
 }

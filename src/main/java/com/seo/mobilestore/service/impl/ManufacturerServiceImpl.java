@@ -5,7 +5,7 @@ import com.seo.mobilestore.common.MessageResponse;
 import com.seo.mobilestore.data.dto.ImageDTO;
 import com.seo.mobilestore.data.dto.PaginationDTO;
 import com.seo.mobilestore.data.dto.product.ProductDTO;
-import com.seo.mobilestore.data.dto.product.ProductTechDTO;
+//import com.seo.mobilestore.data.dto.product.ProductTechDTO;
 import com.seo.mobilestore.data.dto.product.categories.CategoriesDTO;
 import com.seo.mobilestore.data.dto.product.color.ColorDTO;
 import com.seo.mobilestore.data.dto.product.manufacturer.ManufacturerDTO;

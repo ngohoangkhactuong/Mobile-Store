@@ -2,7 +2,6 @@ package com.seo.mobilestore.data.dto.product;
 
 import com.seo.mobilestore.data.dto.*;
 import com.seo.mobilestore.data.dto.product.categories.CategoriesDTO;
-import com.seo.mobilestore.data.dto.product.color.ColorDTO;
 import com.seo.mobilestore.data.dto.product.manufacturer.ManufacturerDTO;
 import com.seo.mobilestore.data.dto.product.memory.MemoryDTO;
 import com.seo.mobilestore.data.dto.product.review.ReviewDTO;
@@ -10,7 +9,6 @@ import com.seo.mobilestore.data.dto.product.seri.SeriDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -28,11 +26,10 @@ public class ProductDTO {
     private boolean status;
     private int views;
     private float star;
-    private List<ProductTechDTO> productTechDTOs;
+//    private List<ProductTechDTO> productTechDTOs;
     private List<SeriDTO> seriDTOs;
-    private List<ColorDTO> colorDTOs;
+//    private List<ColorDTO> colorDTOs;
     private List<MemoryDTO> memoryDTOs;
     private List<ReviewDTO> reviewDTOs;
     private List<ImageDTO> imageDTOs;
-
 }

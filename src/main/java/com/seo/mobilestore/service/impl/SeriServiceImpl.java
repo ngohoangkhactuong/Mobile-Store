@@ -3,10 +3,12 @@ package com.seo.mobilestore.service.impl;
 import com.seo.mobilestore.common.MessageResponse;
 import com.seo.mobilestore.data.dto.PaginationDTO;
 import com.seo.mobilestore.data.dto.product.seri.SeriDTO;
+import com.seo.mobilestore.data.dto.product.seri.SeriProductCreationDTO;
 import com.seo.mobilestore.data.dto.product.seri.SeriProductDTO;
 import com.seo.mobilestore.data.entity.Product;
 import com.seo.mobilestore.data.entity.Seri;
 import com.seo.mobilestore.data.mapper.product.SeriMapper;
+import com.seo.mobilestore.data.repository.ColorRepository;
 import com.seo.mobilestore.data.repository.ProductRepository;
 import com.seo.mobilestore.data.repository.SeriRepository;
 import com.seo.mobilestore.data.repository.UserRepository;
@@ -24,6 +26,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class SeriServiceImpl implements SeriService {
@@ -40,6 +43,8 @@ public class SeriServiceImpl implements SeriService {
     private ProductRepository productRepository;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private ColorRepository colorRepository;
 
     @Override
     public List<SeriDTO> createProductSeri(Product product, List<SeriDTO> seriDTOs) {
@@ -49,7 +54,21 @@ public class SeriServiceImpl implements SeriService {
 
             Seri seri = seriMapper.toEntity(seriDTO);
             seri.setProduct(product);
+            seri.setColor(colorRepository.findByName(seriDTO.getColor_name()));
             seriDTOsResult.add(seriMapper.toDTO(seriRepository.save(seri)));
+        });
+        return seriDTOsResult;
+    }
+
+    @Override
+    public List<SeriProductCreationDTO> createProductSeriCreation(Product product, List<SeriProductCreationDTO> seriDTOs) {
+
+        List<SeriProductCreationDTO> seriDTOsResult = new ArrayList<>();
+        seriDTOs.forEach(seriProductCreationDTO -> {
+            Seri seri = seriMapper.toSeriCreationEntity(seriProductCreationDTO);
+            seri.setProduct(product);
+            seri.setColor(colorRepository.findByName(seriProductCreationDTO.getColor()));
+            seriDTOsResult.add(seriMapper.toSeriProductCreationDTO(seriRepository.save(seri)));
         });
         return seriDTOsResult;
     }
@@ -71,25 +90,26 @@ public class SeriServiceImpl implements SeriService {
         return new MessageResponse(HttpServletResponse.SC_OK, null, null);
     }
     @Override
-    public List<SeriDTO> updateProductSeri(Product product, List<SeriDTO> seriDTOs) {
+    public List<SeriProductCreationDTO> updateProductSeri(Product product, List<SeriProductCreationDTO> seriDTOs) {
 
-        List<SeriDTO> seriDTOsResult = new ArrayList<>();
+        List<SeriProductCreationDTO> seriDTOsResult = new ArrayList<>();
         List<Seri> seris = seriRepository.findByProductId(product.getId());
-        List<SeriDTO> seriDTOsPrepare = new ArrayList<>();
+        List<SeriProductCreationDTO> seriDTOsPrepare = new ArrayList<>();
 
         seris.forEach(seri -> {
-            seriDTOsPrepare.add(seriMapper.toDTO(seri));
-            if (!seriDTOs.contains(seriMapper.toDTO(seri))) {
+            seriDTOsPrepare.add(seriMapper.toSeriProductCreationDTO(seri));
+            if (!seriDTOs.contains(seriMapper.toSeriProductCreationDTO(seri))) {
                 // Update status = false (0) for seri when consumer delete this seri
                 seri.setStatus(false);
                 seriRepository.save(seri);
             } else {
                 seriDTOs.forEach(seriDTO -> {
                     // if seri existed in database, it will be updated then save it
-                    if (seriDTO.getId() == seri.getId()) {
-                        Seri seriMapped = seriMapper.toEntity(seriDTO);
+                    if (Objects.equals(seriDTO.getName(), seri.getName())) {
+                        Seri seriMapped = seriMapper.toSeriCreationEntity(seriDTO);
                         seriMapped.setProduct(product);
-                        seriDTOsResult.add(seriMapper.toDTO(seriRepository.save(seriMapped)));
+                        seriMapped.setColor(colorRepository.findByName(seriDTO.getColor()));
+                        seriDTOsResult.add(seriMapper.toSeriProductCreationDTO(seriRepository.save(seriMapped)));
                     }
                 });
             }
@@ -98,10 +118,11 @@ public class SeriServiceImpl implements SeriService {
         // if existing new seri then save this seri into database
         seriDTOs.forEach(seriDTO -> {
             if (!seriDTOsPrepare.contains(seriDTO)) {
-                Seri seriMapped = seriMapper.toEntity(seriDTO);
+                Seri seriMapped = seriMapper.toSeriCreationEntity(seriDTO);
                 seriMapped.setProduct(product);
+                seriMapped.setColor(colorRepository.findByName(seriDTO.getColor()));
                 Seri seriSaved = seriRepository.save(seriMapped);
-                seriDTOsResult.add(seriMapper.toDTO(seriSaved));
+                seriDTOsResult.add(seriMapper.toSeriProductCreationDTO(seriSaved));
             }
         });
 

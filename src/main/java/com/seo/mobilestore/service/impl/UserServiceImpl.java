@@ -166,7 +166,6 @@ public class UserServiceImpl implements UserService {
     /**
      * Method update password by otp if user forgot password
      *
-     * @param email
      * @param otp
      */
     @Override
@@ -274,7 +273,6 @@ public class UserServiceImpl implements UserService {
         usr.setGender(userProfileDTO.getGender());
         usr.setBirthDay(userProfileDTO.getBirthDay());
         usr.setAddressList(null);
-
 
         return userMapper.toDTO(userRepository.save(usr));
     }

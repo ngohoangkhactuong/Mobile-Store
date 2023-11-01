@@ -4,7 +4,7 @@ import com.seo.mobilestore.constant.ApiURL;
 import com.seo.mobilestore.constant.PageDefault;
 import com.seo.mobilestore.constant.PriceDefault;
 import com.seo.mobilestore.data.dto.product.FilterProductDTO;
-import com.seo.mobilestore.data.dto.product.ProductDTO;
+import com.seo.mobilestore.data.dto.product.ProductCreationDTO;
 import com.seo.mobilestore.service.product.ProductService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,27 +40,27 @@ public class ProductController {
     /**
      * Method create products
      */
-    @SecurityRequirement(name = "Bearer Authentication")
-    @PreAuthorize("hasAuthority('Role_Admin')")
+//    @SecurityRequirement(name = "Bearer Authentication")
+//    @PreAuthorize("hasAuthority('Role_Admin')")
     @PostMapping(value = "", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
-    public ResponseEntity<?> createProduct(@Valid @RequestPart ProductDTO productDTO,
+    public ResponseEntity<?> createProduct(@Valid @RequestPart ProductCreationDTO productCreationDTO,
                                            @RequestPart(name = "fileImages", required = false)
                                            List<MultipartFile> fileImages) {
 
-        return new ResponseEntity<>(this.productService.create(productDTO, fileImages), HttpStatus.CREATED);
+        return new ResponseEntity<>(this.productService.create(productCreationDTO, fileImages), HttpStatus.CREATED);
     }
 
     /**
      * Method update products
      */
-    @SecurityRequirement(name = "Bearer Authentication")
-    @PreAuthorize("hasAuthority('Role_Admin')")
+//    @SecurityRequirement(name = "Bearer Authentication")
+//    @PreAuthorize("hasAuthority('Role_Admin')")
     @PutMapping(value = "/{id}", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
-    public ResponseEntity<?> updateProduct(@PathVariable long id, @Valid @RequestPart ProductDTO productDTO,
+    public ResponseEntity<?> updateProduct(@PathVariable long id, @Valid @RequestPart ProductCreationDTO productCreationDTO,
                                            @RequestPart(name = "fileImages", required = false)
                                            List<MultipartFile> fileImages) {
 
-        return new ResponseEntity<>(this.productService.update(id, productDTO, fileImages), HttpStatus.CREATED);
+        return new ResponseEntity<>(this.productService.update(id, productCreationDTO, fileImages), HttpStatus.CREATED);
     }
 
     /**
@@ -76,7 +76,7 @@ public class ProductController {
     /**
      * Method Search product by keyword
      */
-    @SecurityRequirement(name = "Bearer Authentication")
+//    @SecurityRequirement(name = "Bearer Authentication")
     @GetMapping("/search-product")
     public ResponseEntity<?> searchProduct(@RequestParam(defaultValue = "") String keyword,
                                            @RequestParam(defaultValue = PageDefault.NO) int no,
@@ -89,8 +89,8 @@ public class ProductController {
     /**
      * Method delete product by status
      */
-    @SecurityRequirement(name = "Bearer Authentication")
-    @PreAuthorize("hasAuthority('Role_Admin')")
+//    @SecurityRequirement(name = "Bearer Authentication")
+//    @PreAuthorize("hasAuthority('Role_Admin')")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteById(@PathVariable long id) {
 
@@ -102,7 +102,7 @@ public class ProductController {
     /**
      * Method show product by categories
      */
-    @SecurityRequirement(name = "Bearer Authentication")
+//    @SecurityRequirement(name = "Bearer Authentication")
     @GetMapping("/show-product/{categoryId}")
     public ResponseEntity<?> showListProduct(@PathVariable Long categoryId,
                                              @RequestParam(defaultValue = PageDefault.NO) int no,
@@ -114,7 +114,7 @@ public class ProductController {
     /**
      * Method show detail and increase view
      */
-    @SecurityRequirement(name = "Bearer Authentication")
+//    @SecurityRequirement(name = "Bearer Authentication")
     @GetMapping("/detail/{id}")
     public ResponseEntity<?> showProductDetail(@PathVariable long id) {
 
@@ -125,7 +125,7 @@ public class ProductController {
     /**
      * method search products by many params
      */
-    @SecurityRequirement(name = "Bearer Authentication")
+//    @SecurityRequirement(name = "Bearer Authentication")
     @GetMapping("/filter-product")
     public ResponseEntity<?> showListProduct(@RequestBody FilterProductDTO filterProductDTO,
                                              @RequestParam(defaultValue = PageDefault.NO) int no,
@@ -158,7 +158,7 @@ public class ProductController {
     /**
      * Method show active product by category
      */
-    @SecurityRequirement(name = "Bearer Authentication")
+//    @SecurityRequirement(name = "Bearer Authentication")
     @GetMapping("/active-category/{categoryId}")
     public ResponseEntity<?> showActiveProductByCategory(@PathVariable long categoryId,
                                                          @RequestParam(defaultValue = PageDefault.NO) int no,
@@ -170,7 +170,7 @@ public class ProductController {
     /**
      * Method show active product by manufacturer
      */
-    @SecurityRequirement(name = "Bearer Authentication")
+//    @SecurityRequirement(name = "Bearer Authentication")
     @GetMapping("/active-manufacturer/{manufacturerId}")
     public ResponseEntity<?> showActiveProductByManufacturer(@PathVariable long manufacturerId,
                                                              @RequestParam(defaultValue = PageDefault.NO) int no,
@@ -182,7 +182,7 @@ public class ProductController {
     /**
      * Show active product by price
      */
-    @SecurityRequirement(name = "Bearer Authentication")
+//    @SecurityRequirement(name = "Bearer Authentication")
     @GetMapping("/active-price")
     public ResponseEntity<?> showActiveProductByPrice(@RequestParam(defaultValue = PriceDefault.LOWER_PRICE)
                                                           BigDecimal lowerPrice,

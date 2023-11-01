@@ -30,4 +30,9 @@ public class Seri extends Auditable {
 
     @Column(name = "status")
     private boolean status = true;
+
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "color_id", nullable = false)
+    private Color color;
 }

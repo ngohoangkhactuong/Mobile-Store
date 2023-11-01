@@ -14,5 +14,6 @@ public class SeriDTO implements Serializable {
     private long id;
     private String name;
     private boolean status;
+    private String color_name;
 }
 
