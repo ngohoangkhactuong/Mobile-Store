@@ -15,7 +15,7 @@ public interface OrdersRepository extends JpaRepository<Orders, Long> {
     @Query(value = "SELECT a FROM Orders a WHERE a.user.id = :userId AND a.id = :orderId")
     Orders findOrderByUserId(long userId, long orderId);
 
-    @Query(value = "SELECT a FROM Orders a WHERE a.status = 1 AND a.user.id = :id ORDER BY a.id DESC")
+    @Query(value = "SELECT a FROM Orders a WHERE a.user.id = :id ORDER BY a.id DESC")
     Page<Orders> findAllByUserId(long id, Pageable pageable);
 
     @Query(value = "SELECT a FROM Orders a ORDER BY a.id DESC")

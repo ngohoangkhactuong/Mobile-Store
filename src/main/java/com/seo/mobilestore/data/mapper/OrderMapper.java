@@ -38,6 +38,7 @@ public interface OrderMapper {
     @Mapping(source = "total", target = "total")
     @Mapping(source = "receiveDate", target = "receiveDate")
     @Mapping(source = "status", target = "statusDTO")
+    @Mapping(source = "user", target = "userDTO")
     ShowOrderDTO toShowOrderDTO(Orders orders);
 
     @Mapping(source = "orders", target = "orderDTO")
