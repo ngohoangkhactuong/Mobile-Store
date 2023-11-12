@@ -321,7 +321,6 @@ public class OrderServiceImpl implements OrderService {
                 () -> new InternalServerErrorException(messageSource.getMessage("error.userAuthen",
                         null, null)));
 
-
         Page<Orders> page = this.ordersRepository.findAllByUserId(user.getId(), PageRequest.of(no, limit));
 
         List<ShowOrderDTO> showOrderDTOList = page.getContent().stream().map(this::mapToShowOrderDTO)
@@ -417,7 +416,7 @@ public class OrderServiceImpl implements OrderService {
 
             List<OrderDetails> oldOrderDetails = orderDetailRepository.findAllByOrderId(order_id);
             Long id = oldOrderDetails.get(0).getId();
-            if (oldOrderDetails.size() > 0) {
+            if (!oldOrderDetails.isEmpty()) {
                 oldOrderDetails.forEach(oldOrderDetail -> {
                     orderDetailRepository.deleteById(oldOrderDetail.getId());
                 });
@@ -557,12 +556,12 @@ public class OrderServiceImpl implements OrderService {
     }
 
     public ShowOrderDTO mapToShowOrderDTO(Orders order) {
-        int defaultNum = 0;
+//        int defaultNum = 0;
         ShowOrderDTO showOrderDTO = new ShowOrderDTO();
         ShowOrderDetailsDTO showOrderDetailsDTO = getOrderDetailsDTO(order.getId());
 
         showOrderDTO = this.orderMapper.toShowOrderDTO(order);
-        showOrderDTO.setProductOrderDTO(showOrderDetailsDTO.getOrderProductDTOList().get(defaultNum));
+        showOrderDTO.setProductOrderDTO(showOrderDetailsDTO.getOrderProductDTOList().get(0));
 
         return showOrderDTO;
     }

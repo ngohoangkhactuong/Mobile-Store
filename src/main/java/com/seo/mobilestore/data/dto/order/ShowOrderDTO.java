@@ -2,6 +2,7 @@ package com.seo.mobilestore.data.dto.order;
 
 import com.seo.mobilestore.data.dto.StatusDTO;
 import com.seo.mobilestore.data.dto.product.ProductOrderDTO;
+import com.seo.mobilestore.data.dto.user.UserDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,6 +19,6 @@ public class ShowOrderDTO {
     private Date receiveDate;
     private StatusDTO statusDTO;
     private ProductOrderDTO productOrderDTO;
-    private  long quantity;
-
+    private long quantity;
+    private UserDTO userDTO;
 }
