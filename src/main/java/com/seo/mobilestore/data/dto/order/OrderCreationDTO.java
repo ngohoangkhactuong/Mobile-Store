@@ -23,5 +23,4 @@ public class OrderCreationDTO {
     private long id_address;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = Constant.DATE_FORMAT)
     private Date receiveDate;
-
 }

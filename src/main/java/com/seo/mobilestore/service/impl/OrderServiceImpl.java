@@ -74,11 +74,11 @@ public class OrderServiceImpl implements OrderService {
                 new ResourceNotFoundException(Collections.singletonMap("email", email)));
 
         BigDecimal total = BigDecimal.valueOf(0);
+
         for(ProductOrderDTO productOrderDTO : orderCreationDTO.getOrderProductDTOList()){
             BigDecimal price = productOrderDTO.getPrice();
             total = total.add(price);
         }
-
         Promotion  promotion = null;
         long promotion_id = orderCreationDTO.getId_promotion();
         if(promotion_id != 0){

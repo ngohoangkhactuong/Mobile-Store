@@ -26,7 +26,7 @@ public class User extends Auditable {
     @Column( name = "id")
     private long id;
 
-    @Column(name = "email", unique = true, columnDefinition = "NVARCHAR(25)")
+    @Column(name = "email", unique = true, columnDefinition = "NVARCHAR(100)")
     private String email;
 
     @JsonIgnore

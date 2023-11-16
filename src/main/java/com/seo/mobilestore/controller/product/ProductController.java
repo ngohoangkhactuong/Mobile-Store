@@ -40,8 +40,8 @@ public class ProductController {
     /**
      * Method create products
      */
-//    @SecurityRequirement(name = "Bearer Authentication")
-//    @PreAuthorize("hasAuthority('Role_Admin')")
+    @SecurityRequirement(name = "Bearer Authentication")
+    @PreAuthorize("hasAuthority('Role_Admin')")
     @PostMapping(value = "", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<?> createProduct(@Valid @RequestPart ProductCreationDTO productCreationDTO,
                                            @RequestPart(name = "fileImages", required = false)
@@ -53,8 +53,8 @@ public class ProductController {
     /**
      * Method update products
      */
-//    @SecurityRequirement(name = "Bearer Authentication")
-//    @PreAuthorize("hasAuthority('Role_Admin')")
+    @SecurityRequirement(name = "Bearer Authentication")
+    @PreAuthorize("hasAuthority('Role_Admin')")
     @PutMapping(value = "/{id}", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<?> updateProduct(@PathVariable long id, @Valid @RequestPart ProductCreationDTO productCreationDTO,
                                            @RequestPart(name = "fileImages", required = false)
@@ -89,8 +89,8 @@ public class ProductController {
     /**
      * Method delete product by status
      */
-//    @SecurityRequirement(name = "Bearer Authentication")
-//    @PreAuthorize("hasAuthority('Role_Admin')")
+    @SecurityRequirement(name = "Bearer Authentication")
+    @PreAuthorize("hasAuthority('Role_Admin')")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteById(@PathVariable long id) {
 
@@ -147,7 +147,7 @@ public class ProductController {
      * Method related products by category and manufacturer (default = 6)
      */
 
-//    @PreAuthorize("hasAuthority('Role_Customer')")
+    @PreAuthorize("hasAuthority('Role_Customer')")
     @GetMapping("/related-product")
     public ResponseEntity<?> showRelatedProduct(@RequestParam(defaultValue = "0") long productId,
                                                 @RequestParam(defaultValue = "6") int quantity
