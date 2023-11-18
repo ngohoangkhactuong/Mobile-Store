@@ -31,7 +31,7 @@ public class UserController {
     @Autowired
     private MailService mailService;
 
-//    @SecurityRequirement(name = "Bearer Authentication")
+    @SecurityRequirement(name = "Bearer Authentication")
 //    @PreAuthorize("hasAuthority('Role_Admin')")
     @GetMapping("/{id}")
     public ResponseEntity<?> getById(@PathVariable long id) {
@@ -47,9 +47,6 @@ public class UserController {
     /**
      * Method update profile user
      *
-     * @param id
-     * @param userProfileDTO
-     * @return
      */
     @SecurityRequirement(name = "Bearer Authentication")
     @PreAuthorize("isAuthenticated()")
@@ -63,7 +60,6 @@ public class UserController {
     /**
      * Method active user by otp
      *
-     * @param OTP
      * @return Returns an "ok" response if the address update is successful
      */
     @GetMapping("/active-otp")
@@ -78,7 +74,6 @@ public class UserController {
     /**
      * Method change password by otp if user forgot password
      *
-     * @param changePasswordByOTPDTO
      * @return Returns an "ok" response if the address update is successful
      */
     @PostMapping("/change-password-by-otp") // forgot password
@@ -94,7 +89,6 @@ public class UserController {
     /**
      * Method change password user (pre login successful)
      *
-     * @param changePasswordDTO
      * @return Returns an "ok" response if the address update is successful
      */
     @SecurityRequirement(name = "Bearer Authentication")
@@ -109,8 +103,6 @@ public class UserController {
     /**
      * Method show all user
      *
-     * @param no
-     * @param limit
      * @return show list UserDTO
      */
     @SecurityRequirement(name = "Bearer Authentication")
@@ -125,9 +117,6 @@ public class UserController {
     /**
      * Method search by name user
      *
-     * @param keyword
-     * @param no
-     * @param limit
      * @return show list UserDTO
      */
     @SecurityRequirement(name = "Bearer Authentication")
@@ -143,7 +132,6 @@ public class UserController {
 
     /**
      * Method lock user account
-     * @param id
      */
     @SecurityRequirement(name = "Bearer Authentication")
     @PreAuthorize("hasAuthority('Role_Admin')")
