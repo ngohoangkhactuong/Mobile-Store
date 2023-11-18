@@ -2,10 +2,10 @@ server:
   port: 8085
 db:
   port: 3306
-  name: mobilestore_fix
-  endpoint: 54.254.250.88
+  name: mobilestore_dev
+  endpoint: 34.66.234.236
   username: mobilestore.dev
-  password: Mbs@12345
+  password: b17m25h19h27
 
 spring:
   datasource:

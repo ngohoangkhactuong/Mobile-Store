@@ -63,7 +63,10 @@ public class OrderServiceImpl implements OrderService {
     private EntityManager entityManager;
     @Autowired
     private AddressMapper addressMapper;
-
+    @Autowired
+    private CartRepository cartRepository;
+    @Autowired
+    private ProductRepository productRepository;
 
     @Override
     public OrderDetailDTO create(OrderCreationDTO orderCreationDTO) {
@@ -117,27 +120,39 @@ public class OrderServiceImpl implements OrderService {
         orderDetailDTO.setOrderProductDTOList(orderCreationDTO.getOrderProductDTOList());
         orderDetailDTO.setQuantity(orderCreationDTO.getOrderProductDTOList().size());
 
-        for(ProductOrderDTO productOrderDTO : orderCreationDTO.getOrderProductDTOList()){
+        for(int i = 0; i < orderCreationDTO.getOrderProductDTOList().size(); i++){
 
-            String memory_name = productOrderDTO.getMemory();
-            String seri_name = productOrderDTO.getSeri();
+            String memory_name = orderCreationDTO.getOrderProductDTOList().get(i).getMemory();
+            String seri_name = orderCreationDTO.getOrderProductDTOList().get(i).getSeri();
+            long product_id = orderCreationDTO.getOrderProductDTOList().get(i).getId();
+
+            // check if product in order existed in cart of user
+            Cart cart = cartRepository.findByProductId(product_id);
+            if(cart.equals(null)){
+                if(!cart.getUser().equals(user)){
+                    throw new ResourceNotFoundException(
+                            Collections.singletonMap("Not found",product_id));
+                }
+            }
 
             OrderDetails orderDetails = orderMapper.toDetailEnity(orderDetailDTO);
-            orderDetails.setQuantity(1);
 
-//            Color color = colorRepository.findColorByNameAndProductId(
-//                    color_name , productOrderDTO.getId()
-//            ).orElseThrow(() ->
-//                    new ResourceNotFoundException(Collections.singletonMap("Not found",color_name)));
+            int order_product_quantity = (int)orderCreationDTO.getOrderProductDTOList().get(i).getQuantity();
+            orderDetails.setQuantity(order_product_quantity);
+
+            if(orderDetails.getQuantity() > cart.getQuantity()){
+                throw new IllegalArgumentException("Cannot order product with quantity > it in cart");
+            }
 
             Memory memory = memoryRepository.findMemoryByNameAndProductId(
-                    memory_name , productOrderDTO.getId()
+                    memory_name , product_id
             ).orElseThrow(() ->
                     new ResourceNotFoundException(Collections.singletonMap("Not found",memory_name)));
+
             orderDetails.setMemory(memory);
 
             Seri seri = seriRepository.findSeriByNameAndProductId(
-                    seri_name , productOrderDTO.getId()
+                    seri_name , product_id
             ).orElseThrow((()->
                     new ResourceNotFoundException(Collections.singletonMap("Not found" , seri_name))
                     ));
@@ -150,6 +165,11 @@ public class OrderServiceImpl implements OrderService {
                     .orElse(addressRepository.findDefaultAddress(user.getId())));
 
             this.orderDetailRepository.save(orderDetails);
+
+            long oldQuantityOfProductInCart = cart.getQuantity();
+            cart.setQuantity(
+                    oldQuantityOfProductInCart - order_product_quantity
+            );
         }
 
         return orderDetailDTO;

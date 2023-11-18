@@ -21,4 +21,5 @@ public class Constant {
     public static final String REVIEW = "/review";
     public static final String TECHNICAL = "/technical";
     public static final String COLOR = "/color";
+    public static final String CART = "/cart";
 }

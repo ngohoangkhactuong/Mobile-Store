@@ -19,4 +19,5 @@ public class ApiURL {
     public static final String TECHNICAL = Constant.API + Constant.TECHNICAL;
     public static final String PRODUCT_TECHNICAL = Constant.API + Constant.PRODUCT + Constant.TECHNICAL;
     public static final String COLOR = Constant.API + Constant.COLOR;
+    public static final String CART = Constant.API + Constant.CART;
 }
