@@ -11,5 +11,6 @@ import java.util.List;
 
 @Repository
 public interface CartRepository extends JpaRepository<Cart, Long> {
-
+    @Query("SELECT c FROM Cart c WHERE c.user.id = :user_id")
+    Page<Cart> findCartByUserId(long user_id , Pageable pageable);
 }

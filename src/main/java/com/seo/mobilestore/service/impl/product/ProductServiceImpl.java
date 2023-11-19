@@ -41,13 +41,9 @@ public class ProductServiceImpl implements ProductService {
     @Autowired
     private FileService fileService;
     @Autowired
-    private ColorService colorService;
-    @Autowired
     private ImageService imageService;
     @Autowired
     private MemoryService memoryService;
-//    @Autowired
-//    private ProductTechService productTechService;
     @Autowired
     private SeriService seriService;
     @Autowired
@@ -68,8 +64,6 @@ public class ProductServiceImpl implements ProductService {
     private OrdersRepository ordersRepository;
     @Autowired
     private ImageMapper imageMapper;
-//    @Autowired
-//    private ProductTechMapper productTechMapper;
     @Autowired
     private ReviewMapper reviewMapper;
     @Autowired
@@ -132,7 +126,6 @@ public class ProductServiceImpl implements ProductService {
         checkNotNull(errors, productCreationDTO.getManufacturerDTO(), "Manufacturer");
         checkCollectionNotEmpty(errors, productCreationDTO.getMemoryDTOs(), "Memories");
         checkCollectionNotEmpty(errors, productCreationDTO.getSeriDTOs(), "Series");
- //       checkCollectionNotEmpty(errors, productDTO.getProductTechDTOs(), "ProductTechs");
 
         if (!errors.isEmpty()) {
             throw new ConflictException(Collections.singletonMap("ProductCreationDTO", errors));
@@ -159,14 +152,12 @@ public class ProductServiceImpl implements ProductService {
                 createProductMemoryCreation(product, productCreationDTO.getMemoryDTOs());
         List<SeriProductCreationDTO> seriDTOs = seriService.
                 createProductSeriCreation(product, productCreationDTO.getSeriDTOs());
-//        List<ProductTechDTO> productTechDTOs = productTechService.createProductTech(product, productDTO.getProductTechDTOs());
 
         ProductCreationDTO productDTOResult = productMapper.toProductDTO(product);
         // set DTOs information for productDTO view
         productDTOResult.setImageDTOs(imageDTOs);
         productDTOResult.setMemoryDTOs(memoryDTOs);
         productDTOResult.setSeriDTOs(seriDTOs);
-//        productDTOResult.setProductTechDTOs(productTechDTOs);
 
         return productDTOResult;
     }
@@ -185,9 +176,9 @@ public class ProductServiceImpl implements ProductService {
 
                 () -> new ResourceNotFoundException(Collections.singletonMap("ProductDTO", id)));
 
-        //Check All file input is null or not null
+        // Check All file input is null or not null
         // If null then not update
-        //If file name is null then add old image into imageDTO
+        // If file name is null then add old image into imageDTO
         if (fileImages != null) {
 
             fileImages.forEach(file -> {
@@ -252,12 +243,6 @@ public class ProductServiceImpl implements ProductService {
             return updateDTOsForProduct(productUpdateResult, productCreationDTO);
         }
 
-//        if (product.getReviews() != null) {
-//
-//            productUpdated.setReviews(product.getReviews());
-//
-//        }
-
         // ProductDTO name equals Old Product name and unique
         productUpdateResult = productRepository.save(productUpdated);
 
@@ -267,11 +252,9 @@ public class ProductServiceImpl implements ProductService {
     public ProductCreationDTO updateDTOsForProduct(Product product, ProductCreationDTO productCreationDTO) {
 
         // update lists DTO of product
- //       List<ColorDTO> colorDTOs = colorService.updateProductColor(product, productDTO.getColorDTOs());
         List<ImageDTO> imageDTOs = imageService.updateProductImage(product, productCreationDTO.getImageDTOs());
         List<MemoryProductDTO> memoryDTOs = memoryService.updateProductMemory(product, productCreationDTO.getMemoryDTOs());
         List<SeriProductCreationDTO> seriDTOs = seriService.updateProductSeri(product, productCreationDTO.getSeriDTOs());
-//        List<ProductTechDTO> productTechDTOs = productTechService.updateProductTech(product, productDTO.getProductTechDTOs());
 
         ProductCreationDTO productDTOResult = productMapper.toProductDTO(product);
         List<ReviewDTO> reviewDTOList = new ArrayList<>();
@@ -286,15 +269,12 @@ public class ProductServiceImpl implements ProductService {
                 }
             }
         }
-//        productDTOResult.setReviewDTOs(reviewDTOList);
+
 
         // set lists DTO for productDTO view
-//        productDTOResult.setColorDTOs(colorDTOs);
         productDTOResult.setImageDTOs(imageDTOs);
         productDTOResult.setMemoryDTOs(memoryDTOs);
         productDTOResult.setSeriDTOs(seriDTOs);
-//        productDTOResult.setProductTechDTOs(productTechDTOs);
-
 
         return productDTOResult;
     }
@@ -338,14 +318,7 @@ public class ProductServiceImpl implements ProductService {
                     );
                     productDTO.setSeriDTOs(seriDTOS);
 
-//                    List<ProductTechDTO> productTechDTOs = new ArrayList<>();
-//
-//                    item.getProductTechs().forEach(productTech -> {
-//
-//                        productTechDTOs.add(productTechMapper.toDTO(productTech));
-//                    });
 
-//                    productDTO.setProductTechDTOs(productTechDTOs);
 
                     return productDTO;
 
@@ -395,8 +368,6 @@ public class ProductServiceImpl implements ProductService {
             throw new CannotDeleteException(id);
         }
 
-        //product.setColors(null);
-//        product.setProductTechs(null);
         product.setImages(null);
         product.setSeries(null);
         product.setReviews(null);
@@ -438,13 +409,6 @@ public class ProductServiceImpl implements ProductService {
                     );
                     productDTO.setSeriDTOs(seriDTOS);
 
-//                    List<ProductTechDTO> productTechDTOs = new ArrayList<>();
-//
-//                    item.getProductTechs().forEach(productTech -> {
-//                        productTechDTOs.add(productTechMapper.toDTO(productTech));
-//                    });
-
- //                   productDTO.setProductTechDTOs(productTechDTOs);
 
                     return productDTO;
 
@@ -492,14 +456,6 @@ public class ProductServiceImpl implements ProductService {
                         );
                         productDTO.setSeriDTOs(seriDTOS);
 
-//                        List<ProductTechDTO> productTechDTOs = new ArrayList<>();
-//
-//                        item.getProductTechs().forEach(productTech -> {
-//
-//                            productTechDTOs.add(productTechMapper.toDTO(productTech));
-//                        });
-
- //                       productDTO.setProductTechDTOs(productTechDTOs);
 
                         return productDTO;
 
@@ -531,14 +487,6 @@ public class ProductServiceImpl implements ProductService {
                                 }
                         );
                         productDTO.setSeriDTOs(seriDTOS);
-
-//                        List<ProductTechDTO> productTechDTOs = new ArrayList<>();
-//
-//                        item.getProductTechs().forEach(productTech -> {
-//                            productTechDTOs.add(productTechMapper.toDTO(productTech));
-//                        });
-
- //                       productDTO.setProductTechDTOs(productTechDTOs);
 
                         return productDTO;
 
@@ -585,14 +533,6 @@ public class ProductServiceImpl implements ProductService {
                         );
                         productDTO.setSeriDTOs(seriDTOS);
 
-//                        List<ProductTechDTO> productTechDTOs = new ArrayList<>();
-//
-//                        item.getProductTechs().forEach(productTech -> {
-//                            productTechDTOs.add(productTechMapper.toDTO(productTech));
-//                        });
-
-//                        productDTO.setProductTechDTOs(productTechDTOs);
-
                         return productDTO;
                     });
 
@@ -622,14 +562,6 @@ public class ProductServiceImpl implements ProductService {
                                 }
                         );
                         productDTO.setSeriDTOs(seriDTOS);
-
-//                        List<ProductTechDTO> productTechDTOs = new ArrayList<>();
-//
-//                        item.getProductTechs().forEach(productTech -> {
-//                            productTechDTOs.add(productTechMapper.toDTO(productTech));
-//                        });
-
- //                       productDTO.setProductTechDTOs(productTechDTOs);
 
                         return productDTO;
 
@@ -713,12 +645,6 @@ public class ProductServiceImpl implements ProductService {
         product.setViews(views + plus);
 
         Product productSaved = productRepository.save(product);
-//        List<ProductTechDTO> productTechDTOs = new ArrayList<>();
-//
-//        productSaved.getProductTechs().forEach(productTech -> {
-//
-//            productTechDTOs.add(productTechMapper.toDTO(productTech));
-//        });
 
         ProductDTO productDTO = this.productMapper.toDTO(product);
 
@@ -776,12 +702,6 @@ public class ProductServiceImpl implements ProductService {
         Page<ProductDTO> page;
 
 
-//        int manufacturerId = filterProductDTO.getManufactureId();
-//        int categoryId = filterProductDTO.getCategoryId();
-//        String keyword = filterProductDTO.getKeyword();
-//        BigDecimal lowerPrice = filterProductDTO.getLowerPrice();
-//        BigDecimal higherPrice = filterProductDTO.getHigherPrice();
-
         if (higherPrice == null) {
             higherPrice = BigDecimal.valueOf(10000000);
         }
@@ -814,14 +734,7 @@ public class ProductServiceImpl implements ProductService {
                                 }
                         );
                         productDTO.setSeriDTOs(seriDTOS);
-//
-//                        List<ProductTechDTO> productTechDTOs = new ArrayList<>();
-//
-//                        item.getProductTechs().forEach(productTech -> {
-//                            productTechDTOs.add(productTechMapper.toDTO(productTech));
-//                        });
 
- //                       productDTO.setProductTechDTOs(productTechDTOs);
 
                         return productDTO;
                     });
@@ -857,15 +770,6 @@ public class ProductServiceImpl implements ProductService {
                         );
                         productDTO.setSeriDTOs(seriDTOS);
 
-//                        List<ProductTechDTO> productTechDTOs = new ArrayList<>();
-//
-//                        item.getProductTechs().forEach(productTech -> {
-//
-//                            productTechDTOs.add(productTechMapper.toDTO(productTech));
-//                        });
-
- //                       productDTO.setProductTechDTOs(productTechDTOs);
-
                         return productDTO;
 
                     });
@@ -879,15 +783,6 @@ public class ProductServiceImpl implements ProductService {
     public ProductDTO setProductTechDTOforProductDTO(Product product) {
 
         ProductDTO productDTO = productMapper.toDTO(product);
-//        List<ProductTechDTO> productTechDTOs = new ArrayList<>();
-//
-//        product.getProductTechs().forEach(productTech -> {
-//
-//            ProductTechDTO productTechDTO = productTechMapper.toDTO(productTech);
-//            productTechDTOs.add(productTechDTO);
-//        });
-
- //       productDTO.setProductTechDTOs(productTechDTOs);
 
         return productDTO;
 
@@ -930,15 +825,6 @@ public class ProductServiceImpl implements ProductService {
                             }
                     );
                     productDTO.setSeriDTOs(seriDTOS);
-
-//                    List<ProductTechDTO> productTechDTOs = new ArrayList<>();
-//
-//                    item.getProductTechs().forEach(productTech -> {
-//
-//                        productTechDTOs.add(productTechMapper.toDTO(productTech));
-//                    });
-
- //                   productDTO.setProductTechDTOs(productTechDTOs);
 
                     return productDTO;
 
@@ -984,15 +870,6 @@ public class ProductServiceImpl implements ProductService {
                             }
                     );
                     productDTO.setSeriDTOs(seriDTOS);
-
-//                    List<ProductTechDTO> productTechDTOs = new ArrayList<>();
-//
-//                    item.getProductTechs().forEach(productTech -> {
-//
-//                        productTechDTOs.add(productTechMapper.toDTO(productTech));
-//                    });
-
- //                   productDTO.setProductTechDTOs(productTechDTOs);
 
                     return productDTO;
 
@@ -1044,15 +921,6 @@ public class ProductServiceImpl implements ProductService {
                         );
                         productDTO.setSeriDTOs(seriDTOS);
 
-//                        List<ProductTechDTO> productTechDTOs = new ArrayList<>();
-//
-//                        item.getProductTechs().forEach(productTech -> {
-//
-//                            productTechDTOs.add(productTechMapper.toDTO(productTech));
-//                        });
-
-//                        productDTO.setProductTechDTOs(productTechDTOs);
-
                         return productDTO;
 
                     });
@@ -1083,15 +951,6 @@ public class ProductServiceImpl implements ProductService {
                                 }
                         );
                         productDTO.setSeriDTOs(seriDTOS);
-
-//                        List<ProductTechDTO> productTechDTOs = new ArrayList<>();
-//
-//                        item.getProductTechs().forEach(productTech -> {
-//
-//                            productTechDTOs.add(productTechMapper.toDTO(productTech));
-//                        });
-
- //                       productDTO.setProductTechDTOs(productTechDTOs);
 
                         return productDTO;
 
