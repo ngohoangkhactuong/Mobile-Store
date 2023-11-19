@@ -55,11 +55,11 @@ public class CartServiceImpl implements CartService {
         cart.setUser(user);
 
         CartDTO cartDTO = cartMapper.toDTO(cartRepository.save(cart));
-
+// ---------------------------------------------------------------------------------------------------------------------
         CartDetailDTO cartDetailDTO = new CartDetailDTO();
         cartDetailDTO.setCartDTO(cartDTO);
         cartDetailDTO.setOrderProductDTOList(cartCreationDTO.getOrderProductDTOList());
-        cartDetailDTO.setSize(cartCreationDTO.getOrderProductDTOList().size());
+        cartDetailDTO.setQuantity(cartCreationDTO.getOrderProductDTOList().size());
 
         for(int i = 0; i < cartCreationDTO.getOrderProductDTOList().size() ; i++){
 

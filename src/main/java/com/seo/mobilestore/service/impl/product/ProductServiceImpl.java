@@ -763,18 +763,24 @@ public class ProductServiceImpl implements ProductService {
      * method search products by many params
      */
     @Override
-    public PaginationDTO showListProductFilter(FilterProductDTO filterProductDTO, int no, int limit) {
+    public PaginationDTO showListProductFilter(
+            int manufacturerId ,
+            int categoryId,
+            String keyword,
+            BigDecimal lowerPrice,
+            BigDecimal higherPrice,
+            int no, int limit) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         Page<ProductDTO> page;
 
 
-        int manufacturerId = filterProductDTO.getManufactureId();
-        int categoryId = filterProductDTO.getCategoryId();
-        String keyword = filterProductDTO.getKeyword();
-        BigDecimal lowerPrice = filterProductDTO.getLowerPrice();
-        BigDecimal higherPrice = filterProductDTO.getHigherPrice();
+//        int manufacturerId = filterProductDTO.getManufactureId();
+//        int categoryId = filterProductDTO.getCategoryId();
+//        String keyword = filterProductDTO.getKeyword();
+//        BigDecimal lowerPrice = filterProductDTO.getLowerPrice();
+//        BigDecimal higherPrice = filterProductDTO.getHigherPrice();
 
         if (higherPrice == null) {
             higherPrice = BigDecimal.valueOf(10000000);

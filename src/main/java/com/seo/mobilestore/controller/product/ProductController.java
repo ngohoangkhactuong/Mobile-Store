@@ -127,19 +127,31 @@ public class ProductController {
      */
 //    @SecurityRequirement(name = "Bearer Authentication")
     @GetMapping("/filter-product")
-    public ResponseEntity<?> showListProduct(@RequestBody FilterProductDTO filterProductDTO,
-                                             @RequestParam(defaultValue = PageDefault.NO) int no,
-                                             @RequestParam(defaultValue = PageDefault.LIMIT) int limit) {
-        if (filterProductDTO.getLowerPrice() == null){
-            filterProductDTO.setLowerPrice(new BigDecimal(PriceDefault.LOWER_PRICE));
+    public ResponseEntity<?> showListProduct(
+            @RequestParam int manufacturerId,
+            @RequestParam int categoryId,
+            @RequestParam String keyword,
+            @RequestParam(defaultValue = PriceDefault.LOWER_PRICE) BigDecimal lowerPrice,
+            @RequestParam(defaultValue = PriceDefault.HIGHER_PRICE) BigDecimal higherPrice,
+            @RequestParam(defaultValue = PageDefault.NO) int no,
+            @RequestParam(defaultValue = PageDefault.LIMIT) int limit) {
+        if (lowerPrice == null){
+            lowerPrice = new BigDecimal(PriceDefault.LOWER_PRICE);
         }
-        if (filterProductDTO.getHigherPrice() == null)
+        if (higherPrice == null)
         {
-            filterProductDTO.setHigherPrice(new BigDecimal(PriceDefault.HIGHER_PRICE));
+            higherPrice = new BigDecimal(PriceDefault.HIGHER_PRICE);
         }
 
         return ResponseEntity.ok().body(this.productService
-                .showListProductFilter(filterProductDTO, no, limit));
+                .showListProductFilter(
+                        manufacturerId,
+                        categoryId,
+                        keyword,
+                        lowerPrice,
+                        higherPrice,
+                        no,
+                        limit));
     }
 
 
