@@ -2,7 +2,7 @@ package com.seo.mobilestore.controller;
 
 import com.seo.mobilestore.constant.ApiURL;
 import com.seo.mobilestore.constant.PageDefault;
-import com.seo.mobilestore.data.dto.product.cart.CartDTO;
+import com.seo.mobilestore.data.dto.product.cart.CartCreationDTO;
 import com.seo.mobilestore.service.CartService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,17 +24,17 @@ public class CartController {
     @SecurityRequirement(name = "Bearer Authentication")
     @PreAuthorize("hasAuthority('Role_Customer')")
     @PostMapping(value = "")
-    public ResponseEntity<?> createCart(@RequestBody CartDTO cartDTO) {
+    public ResponseEntity<?> createCart(@RequestBody CartCreationDTO cartCreationDTO) {
 
-        return new ResponseEntity<>(this.cartService.create(cartDTO), HttpStatus.CREATED);
+        return new ResponseEntity<>(this.cartService.create(cartCreationDTO), HttpStatus.CREATED);
     }
 
     @SecurityRequirement(name = "Bearer Authentication")
     @PreAuthorize("hasAuthority('Role_Customer')")
     @PutMapping(value = "/{cart_id}")
-    public ResponseEntity<?> updateCart(@PathVariable long cart_id , @RequestBody CartDTO cartDTO) {
+    public ResponseEntity<?> updateCart(@PathVariable long cart_id , @RequestBody CartCreationDTO cartCreationDTO) {
 
-        return new ResponseEntity<>(this.cartService.update(cart_id , cartDTO), HttpStatus.CREATED);
+        return new ResponseEntity<>(this.cartService.update(cart_id , cartCreationDTO), HttpStatus.CREATED);
     }
 
     @SecurityRequirement(name = "Bearer Authentication")
