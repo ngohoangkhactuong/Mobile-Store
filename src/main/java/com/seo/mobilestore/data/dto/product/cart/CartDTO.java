@@ -1,5 +1,6 @@
 package com.seo.mobilestore.data.dto.product.cart;
 
+import com.seo.mobilestore.data.dto.user.UserDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,6 +9,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CartDTO {
-    private long product_id;
-    private long quantity;
+    private long id;
+    private UserDTO userDTO;
 }

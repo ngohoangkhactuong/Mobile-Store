@@ -27,10 +27,7 @@ import org.springframework.stereotype.Service;
 import javax.persistence.EntityManager;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -109,7 +106,7 @@ public class OrderServiceImpl implements OrderService {
         order.setReceiveDate(java.sql.Timestamp.valueOf(LocalDateTime.now().plusDays(0)));
         order.setPaymentStatus(!orderCreationDTO.getPayment_method().equals(EPaymentMethod.Cash.toString()));
 
-        this.ordersRepository.save(order);
+
         /* ---------------------------------------------------------------------------------------------------- */
 
         OrderDTO orderDTO = orderMapper.toDTO(order);
@@ -127,28 +124,25 @@ public class OrderServiceImpl implements OrderService {
             long product_id = orderCreationDTO.getOrderProductDTOList().get(i).getId();
 
             // check if product in order existed in cart of user
-            Cart cart = cartRepository.findByProductId(product_id);
-            if(cart.equals(null)){
-                if(!cart.getUser().equals(user)){
-                    throw new ResourceNotFoundException(
-                            Collections.singletonMap("Not found",product_id));
-                }
-            }
+//            Cart cart = cartRepository.findByProductId(product_id);
+//            if (Objects.equals(cart, null) && !Objects.equals(cart.getUser(), user)) {
+//                throw new ResourceNotFoundException(
+//                        Collections.singletonMap("Not found", product_id));
+//            }
 
             OrderDetails orderDetails = orderMapper.toDetailEnity(orderDetailDTO);
 
             int order_product_quantity = (int)orderCreationDTO.getOrderProductDTOList().get(i).getQuantity();
             orderDetails.setQuantity(order_product_quantity);
 
-            if(orderDetails.getQuantity() > cart.getQuantity()){
-                throw new IllegalArgumentException("Cannot order product with quantity > it in cart");
-            }
+//            if(orderDetails.getQuantity() > cart.getQuantity()){
+//                throw new IllegalArgumentException("Cannot order product with quantity > it in cart");
+//            }
 
             Memory memory = memoryRepository.findMemoryByNameAndProductId(
                     memory_name , product_id
             ).orElseThrow(() ->
                     new ResourceNotFoundException(Collections.singletonMap("Not found",memory_name)));
-
             orderDetails.setMemory(memory);
 
             Seri seri = seriRepository.findSeriByNameAndProductId(
@@ -165,12 +159,9 @@ public class OrderServiceImpl implements OrderService {
                     .orElse(addressRepository.findDefaultAddress(user.getId())));
 
             this.orderDetailRepository.save(orderDetails);
-
-            long oldQuantityOfProductInCart = cart.getQuantity();
-            cart.setQuantity(
-                    oldQuantityOfProductInCart - order_product_quantity
-            );
         }
+
+        this.ordersRepository.save(order);
 
         return orderDetailDTO;
     }
