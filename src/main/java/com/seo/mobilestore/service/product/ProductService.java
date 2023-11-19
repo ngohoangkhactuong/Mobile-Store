@@ -28,7 +28,13 @@ public interface ProductService {
 
     ProductDTO showDetailProduct(long id);
 
-    PaginationDTO showListProductFilter(FilterProductDTO filterProductDTO, int no, int limit);
+    PaginationDTO showListProductFilter(
+            int manufacturerId ,
+            int categoryId,
+            String keyword,
+            BigDecimal lowerPrice,
+            BigDecimal higherPrice,
+            int no, int limit);
     PaginationDTO showProductByCategoryAndManufacturer(long category_id , long manufacturer_id, int no, int limit);
 
     List<ShowProductRelated> showRelatedProduct(long productId, int quantity);

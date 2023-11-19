@@ -15,6 +15,6 @@ public class CartDetailDTO {
     @JsonIgnore
     private long id;
     private CartDTO cartDTO;
-    private int size;
+    private int quantity;
     List<ProductOrderDTO> orderProductDTOList;
 }
