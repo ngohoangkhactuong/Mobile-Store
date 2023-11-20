@@ -3,9 +3,9 @@ server:
 db:
   port: 3306
   name: mobilestore_dev
-  endpoint: 34.66.234.236
-  username: mobilestore.dev
-  password: b17m25h19h27
+  endpoint: localhost
+  username: root
+  password: Tuong14236
 
 spring:
   datasource:

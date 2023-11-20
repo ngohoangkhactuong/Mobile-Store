@@ -56,6 +56,7 @@ public class CartServiceImpl implements CartService {
         cart.setUser(user);
 
         CartDTO cartDTO = cartMapper.toDTO(cartRepository.save(cart));
+        cartDTO.setId(cart.getId());
 // ---------------------------------------------------------------------------------------------------------------------
         CartDetailDTO cartDetailDTO = new CartDetailDTO();
         cartDetailDTO.setCartDTO(cartDTO);
@@ -67,20 +68,20 @@ public class CartServiceImpl implements CartService {
             String memory = cartCreationDTO.getOrderProductDTOList().get(i).getMemory();
             String seri = cartCreationDTO.getOrderProductDTOList().get(i).getSeri();
 
-            long product_id = cartCreationDTO.getOrderProductDTOList().get(i).getId();
+            String product_name = cartCreationDTO.getOrderProductDTOList().get(i).getName();
 
             CartDetails cartDetails = cartMapper.toDetailEntity(cartDetailDTO);
             cartDetails.setQuantity((int)cartCreationDTO.getOrderProductDTOList().get(i).getQuantity());
 
             cartDetails.setMemory(
-                    memoryRepository.findMemoryByNameAndProductId(
-                            memory , product_id
+                    memoryRepository.findMemoryByNameAndProductName(
+                            memory , product_name
                     ).orElseThrow(() ->
                             new ResourceNotFoundException(Collections.singletonMap("Not found",memory)))
             );
 
-            Seri SERI = seriRepository.findSeriByNameAndProductId(
-                    seri , product_id
+            Seri SERI = seriRepository.findSeriByNameAndProductName(
+                    seri , product_name
             ).orElseThrow((()->
                     new ResourceNotFoundException(Collections.singletonMap("Not found" , seri))
             ));
@@ -139,20 +140,20 @@ public class CartServiceImpl implements CartService {
             String memory = cartUpdateDTO.getOrderProductDTOList().get(i).getMemory();
             String seri = cartUpdateDTO.getOrderProductDTOList().get(i).getSeri();
 
-            long product_id = cartUpdateDTO.getOrderProductDTOList().get(i).getId();
+            String product_name = cartUpdateDTO.getOrderProductDTOList().get(i).getName();
 
             CartDetails cartDetails = cartMapper.toDetailEntity(newCartDetailDTO);
             cartDetails.setQuantity((int)cartUpdateDTO.getOrderProductDTOList().get(i).getQuantity());
 
             cartDetails.setMemory(
-                    memoryRepository.findMemoryByNameAndProductId(
-                            memory , product_id
+                    memoryRepository.findMemoryByNameAndProductName(
+                            memory , product_name
                     ).orElseThrow(() ->
                             new ResourceNotFoundException(Collections.singletonMap("Not found",memory)))
             );
 
-            Seri SERI = seriRepository.findSeriByNameAndProductId(
-                    seri , product_id
+            Seri SERI = seriRepository.findSeriByNameAndProductName(
+                    seri , product_name
             ).orElseThrow((()->
                     new ResourceNotFoundException(Collections.singletonMap("Not found" , seri))
             ));
@@ -185,6 +186,7 @@ public class CartServiceImpl implements CartService {
         return true;
     }
 
+    @Override
     public PaginationDTO getAllPagination(int no, int limit){
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userRepository.findByEmail(email).orElseThrow(

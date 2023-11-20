@@ -24,12 +24,12 @@ public interface SeriRepository extends JpaRepository<Seri, Long> {
     @Query(value = "SELECT i FROM Seri i WHERE i.product.id =:#{#product.id} AND i.name =:name")
     boolean findByNameAndProductId(String name, @Param("product") Product product);
 
-    @Query(value = "SELECT s FROM Seri s WHERE s.product.id =:id and s.status= 1")
+    @Query(value = "SELECT s FROM Seri s WHERE s.product.id =:id and s.status= true")
     List<Seri> findByProductId(long id);
     Optional<Seri> findByName(String name);
 
-    @Query("SELECT s FROM Seri s WHERE s.name = :seriName AND s.product.id = :productId")
-    Optional<Seri> findSeriByNameAndProductId(@Param("seriName") String seriName, @Param("productId") Long productId);
+    @Query("SELECT s FROM Seri s WHERE s.name = :seriName AND s.product.name = :productName")
+    Optional<Seri> findSeriByNameAndProductName(@Param("seriName") String seriName, @Param("productName") String productName);
 
     Optional<Seri> findById(long id);
 

@@ -11,7 +11,6 @@ import org.springframework.stereotype.Component;
 @Component
 public interface CartMapper {
 
-
     Cart toEntity(CartCreationDTO cartCreationDTO);
     @Mapping(source = "user", target = "userDTO")
     CartDTO toDTO(Cart cart);
