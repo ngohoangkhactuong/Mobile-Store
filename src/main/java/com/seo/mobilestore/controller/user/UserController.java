@@ -18,6 +18,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.transaction.Transactional;
 import javax.validation.Valid;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -135,6 +136,7 @@ public class UserController {
      */
     @SecurityRequirement(name = "Bearer Authentication")
     @PreAuthorize("hasAuthority('Role_Admin')")
+    @Transactional
     @PutMapping("/lock-user/{id}")
     public ResponseEntity<?> disableUser(@PathVariable long id) {
 
@@ -143,4 +145,14 @@ public class UserController {
                 messageSource.getMessage("success.lockUser", null, null), null));
     }
 
+    @SecurityRequirement(name = "Bearer Authentication")
+    @PreAuthorize("hasAuthority('Role_Admin')")
+    @Transactional
+    @PutMapping("/unlock-user/{id}")
+    public ResponseEntity<?> unlockUser(@PathVariable long id) {
+
+        this.userService.unlock(id);
+        return ResponseEntity.ok(new MessageResponse(HttpServletResponse.SC_OK,
+                messageSource.getMessage("success.unlockUser", null, null), null));
+    }
 }

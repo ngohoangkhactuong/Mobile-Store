@@ -45,4 +45,6 @@ public interface UserService extends UserDetailsService {
     UserDTO showUserDetail();
 
     UserDTO disable(long id);
+
+    UserDTO unlock(long id);
 }
