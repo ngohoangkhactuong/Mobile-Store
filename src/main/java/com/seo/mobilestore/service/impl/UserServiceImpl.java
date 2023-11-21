@@ -64,8 +64,6 @@ public class UserServiceImpl implements UserService {
 
     /**
      * Method get current user by id when login success
-     *
-     * @return long id
      */
     @Override
     public Long getCurrentUserId() {
@@ -74,9 +72,6 @@ public class UserServiceImpl implements UserService {
 
     /**
      * Mehod find user by email
-     *
-     * @param email
-     * @return User
      */
     @Override
     public User findByEmail(String email) {
@@ -89,9 +84,6 @@ public class UserServiceImpl implements UserService {
 
     /**
      * Method update otp of user
-     *
-     * @param email
-     * @param otp
      */
     @Override
     public void updateTokenActive(String email, String otp) {
@@ -110,10 +102,6 @@ public class UserServiceImpl implements UserService {
 
     /**
      * Method load user by name for authentication
-     *
-     * @param email the username identifying the user whose data is required.
-     * @return
-     * @throws UsernameNotFoundException
      */
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
@@ -132,8 +120,6 @@ public class UserServiceImpl implements UserService {
 
     /**
      * Method active user if otp true
-     *
-     * @param Otp
      */
     @Override
     public void activeUser(String Otp) {
@@ -151,9 +137,6 @@ public class UserServiceImpl implements UserService {
 
     /**
      * Method check exists email
-     *
-     * @param email
-     * @return
      */
     @Override
     public boolean existsByEmail(String email) {
@@ -165,8 +148,6 @@ public class UserServiceImpl implements UserService {
 
     /**
      * Method update password by otp if user forgot password
-     *
-     * @param otp
      */
     @Override
     public void updateTokenForgetPassword(String email, String otp) {
@@ -186,10 +167,6 @@ public class UserServiceImpl implements UserService {
 
     /**
      * Method check valid old password for change password
-     *
-     * @param oldPass
-     * @param confirmPass
-     * @return boolean
      */
     @Override
     public boolean checkValidOldPassword(String oldPass, String confirmPass) {
@@ -201,9 +178,6 @@ public class UserServiceImpl implements UserService {
 
     /**
      * Method create user
-     *
-     * @param userCreationDTO
-     * @return show UserDTO if success
      */
     @Override
     public UserDTO create(UserCreationDTO userCreationDTO) {
@@ -245,10 +219,6 @@ public class UserServiceImpl implements UserService {
 
     /**
      * Method update profile user
-     *
-     * @param id
-     * @param userProfileDTO
-     * @return UserDTO
      */
     @Override
     public UserDTO update(long id, UserProfileDTO userProfileDTO) {
@@ -257,9 +227,12 @@ public class UserServiceImpl implements UserService {
                 () -> new InternalServerErrorException(messageSource.getMessage("error.userAuthen",
                         null, null)));
 
-        //Authentication user want update profile
-        if (user.getId() != id)
-            throw new AccessDeniedException();
+        // if user is not admin
+        if(user.getRole().getId() != 1){
+            //Authentication user want update profile
+            if (user.getId() != id)
+                throw new AccessDeniedException();
+        }
 
         User usr = this.userRepository.findById(id).orElseThrow(() ->
                 new ResourceNotFoundException(Collections.singletonMap("User ID ", id)));
@@ -279,9 +252,6 @@ public class UserServiceImpl implements UserService {
 
     /**
      * Method find all user
-     * @param no
-     * @param limit
-     * @return PaginationDTO
      */
     @Override
     public PaginationDTO findAllPagination(int no, int limit) {
@@ -295,11 +265,6 @@ public class UserServiceImpl implements UserService {
 
     /**
      * Method Find user by name
-     *
-     * @param keyword
-     * @param no
-     * @param limit
-     * @return PaginationDTO
      */
     @Override
     public PaginationDTO findAllByKeywordsPagination(String keyword, int no, int limit) {
@@ -316,8 +281,6 @@ public class UserServiceImpl implements UserService {
 
     /**
      * Method show user detail
-     *
-     * @return UserDTO
      */
     @Override
     public UserDTO showUserDetail() {
@@ -331,9 +294,6 @@ public class UserServiceImpl implements UserService {
 
     /**
      * lock user
-     *
-     * @param id
-     * @return UserDTO
      */
     @Override
     public UserDTO disable(long id) {
@@ -363,9 +323,6 @@ public class UserServiceImpl implements UserService {
 
     /**
      * Method change password user (pre login successful)
-     *
-     * @param changePasswordDTO
-     * @return Returns an "ok" response if the address update is successful
      */
     @Override
     public boolean changePasswordByToken(ChangePasswordDTO changePasswordDTO) {
@@ -384,9 +341,6 @@ public class UserServiceImpl implements UserService {
 
         // Check confirm old password similar to old password
         if (checkValidOldPassword(oldPassword, changePasswordDTO.getOldPassword())) {
-            if (!validation.passwordValid(newPassword))
-                throw new InternalServerErrorException(messageSource.getMessage("error.passwordRegex",
-                        null, null));
 
             user.setPassword(passwordEncoder.encode(newPassword));
             user.setAddressList(null);
@@ -404,8 +358,6 @@ public class UserServiceImpl implements UserService {
 
     /**
      * Method change password by otp if user forgot password
-     *
-     * @param changePasswordByOTPDTO
      */
     @Override
     public void changePasswordByOTP(ChangePasswordByOTPDTO changePasswordByOTPDTO) {

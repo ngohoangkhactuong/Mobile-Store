@@ -23,9 +23,7 @@ public interface ProductMapper {
 
     @Mapping(source = "category", target = "categoriesDTO")
     @Mapping(source = "manufacturer", target = "manufacturerDTO")
-//    @Mapping(source = "productTechs", target = "productTechDTOs")
      @Mapping(source = "series", target = "seriDTOs")
-//    @Mapping(source = "colors", target = "colorDTOs")
     @Mapping(source = "memories", target = "memoryDTOs")
     @Mapping(source = "reviews", target = "reviewDTOs")
     @Mapping(source = "images", target = "imageDTOs")
