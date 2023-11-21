@@ -337,17 +337,29 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public UserDTO disable(long id) {
+        User user = this.userRepository.findById(id).orElseThrow(() ->
+                new ResourceNotFoundException(Collections.singletonMap("User ID ", id)));
+
+        user.setLock_status(true);
+        user.setAddressList(null);
+
+        userRepository.save(user);
+
+        return userMapper.toDTO(user);
+    }
+
+    @Override
+    public UserDTO unlock(long id){
         User usr = this.userRepository.findById(id).orElseThrow(() ->
                 new ResourceNotFoundException(Collections.singletonMap("User ID ", id)));
 
-        usr.setLock_status(true);
+        usr.setLock_status(false);
         usr.setAddressList(null);
 
         userRepository.save(usr);
 
         return userMapper.toDTO(usr);
     }
-
 
     /**
      * Method change password user (pre login successful)
