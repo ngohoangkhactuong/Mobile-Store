@@ -18,6 +18,6 @@ public interface MemoryRepository extends JpaRepository<Memory  , Long> {
     @Query(value = "SELECT m FROM Memory m WHERE m.product.id =:id and m.status= true")
     List<Memory> findByProductId(long id);
 
-    @Query("SELECT m FROM Memory m WHERE m.name = :memoryName AND m.product.name = :productName")
+    @Query("SELECT m FROM Memory m WHERE m.name = :memoryName AND m.product.name = :productName AND m.status = true")
     Optional<Memory> findMemoryByNameAndProductName(@Param("memoryName") String memoryName, @Param("productName") String productName);
 }

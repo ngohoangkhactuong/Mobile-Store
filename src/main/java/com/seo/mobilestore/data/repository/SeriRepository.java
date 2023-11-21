@@ -28,7 +28,7 @@ public interface SeriRepository extends JpaRepository<Seri, Long> {
     List<Seri> findByProductId(long id);
     Optional<Seri> findByName(String name);
 
-    @Query("SELECT s FROM Seri s WHERE s.name = :seriName AND s.product.name = :productName")
+    @Query("SELECT s FROM Seri s WHERE s.name = :seriName AND s.product.name = :productName AND s.status = true")
     Optional<Seri> findSeriByNameAndProductName(@Param("seriName") String seriName, @Param("productName") String productName);
 
     Optional<Seri> findById(long id);

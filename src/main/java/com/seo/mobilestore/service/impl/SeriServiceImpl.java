@@ -100,8 +100,8 @@ public class SeriServiceImpl implements SeriService {
             seriDTOsPrepare.add(seriMapper.toSeriProductCreationDTO(seri));
             if (!seriDTOs.contains(seriMapper.toSeriProductCreationDTO(seri))) {
                 // Update status = false (0) for seri when consumer delete this seri
-                seri.setStatus(false);
-                seriRepository.save(seri);
+                // seri.setStatus(false);
+                seriRepository.delete(seri);
             } else {
                 seriDTOs.forEach(seriDTO -> {
                     // if seri existed in database, it will be updated then save it

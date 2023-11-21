@@ -569,7 +569,7 @@ public class OrderServiceImpl implements OrderService {
         ShowOrderDetailsDTO showOrderDetailsDTO = getOrderDetailsDTO(order.getId());
 
         showOrderDTO = this.orderMapper.toShowOrderDTO(order);
-        showOrderDTO.setProductOrderDTO(showOrderDetailsDTO.getOrderProductDTOList().get(0));
+        showOrderDTO.setProductOrderDTO(showOrderDetailsDTO.getOrderProductDTOList());
 
         return showOrderDTO;
     }

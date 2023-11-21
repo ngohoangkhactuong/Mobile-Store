@@ -23,6 +23,6 @@ public class Cart extends Auditable{
     private long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "user_id", nullable = false , unique = true)
     private User user;
 }
