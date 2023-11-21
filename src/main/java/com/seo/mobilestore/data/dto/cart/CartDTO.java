@@ -1,4 +1,4 @@
-package com.seo.mobilestore.data.dto.product.cart;
+package com.seo.mobilestore.data.dto.cart;
 
 import com.seo.mobilestore.data.dto.user.UserDTO;
 import lombok.AllArgsConstructor;

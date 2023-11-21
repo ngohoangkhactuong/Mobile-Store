@@ -4,10 +4,12 @@ import com.seo.mobilestore.common.enumeration.ENum;
 import com.seo.mobilestore.common.enumeration.EPaymentMethod;
 import com.seo.mobilestore.common.enumeration.Estatus;
 import com.seo.mobilestore.data.dto.PaginationDTO;
+import com.seo.mobilestore.data.dto.cart.CartDTO;
 import com.seo.mobilestore.data.dto.order.*;
 import com.seo.mobilestore.data.dto.product.ProductOrderDTO;
 import com.seo.mobilestore.data.dto.product.ShowProductOrderDTO;
 import com.seo.mobilestore.data.entity.*;
+import com.seo.mobilestore.data.mapper.CartMapper;
 import com.seo.mobilestore.data.mapper.OrderMapper;
 import com.seo.mobilestore.data.mapper.address.AddressMapper;
 import com.seo.mobilestore.data.repository.*;
@@ -64,6 +66,10 @@ public class OrderServiceImpl implements OrderService {
     private CartRepository cartRepository;
     @Autowired
     private ProductRepository productRepository;
+    @Autowired
+    private CartDetailRepository cartDetailRepository;
+    @Autowired
+    private CartMapper cartMapper;
 
     @Override
     public OrderDetailDTO create(OrderCreationDTO orderCreationDTO) {
@@ -105,11 +111,9 @@ public class OrderServiceImpl implements OrderService {
         order.setStatus(status);
         order.setReceiveDate(java.sql.Timestamp.valueOf(LocalDateTime.now().plusDays(0)));
         order.setPaymentStatus(!orderCreationDTO.getPayment_method().equals(EPaymentMethod.Cash.toString()));
-
-
         /* ---------------------------------------------------------------------------------------------------- */
 
-        OrderDTO orderDTO = orderMapper.toDTO(order);
+        OrderDTO orderDTO = orderMapper.toDTO(ordersRepository.save(order));
 
         /*------------------------------------ Xử lý OrderDetail ---------------------------------------------*/
         OrderDetailDTO orderDetailDTO = new OrderDetailDTO();
@@ -117,36 +121,35 @@ public class OrderServiceImpl implements OrderService {
         orderDetailDTO.setOrderProductDTOList(orderCreationDTO.getOrderProductDTOList());
         orderDetailDTO.setQuantity(orderCreationDTO.getOrderProductDTOList().size());
 
+        Cart cart = cartRepository.findCartByUserId(user.getId());
+        List<CartDetails> cartDetailsList = cartDetailRepository.findAllByCartId(cart.getId());
+
         for(int i = 0; i < orderCreationDTO.getOrderProductDTOList().size(); i++){
 
             String memory_name = orderCreationDTO.getOrderProductDTOList().get(i).getMemory();
             String seri_name = orderCreationDTO.getOrderProductDTOList().get(i).getSeri();
-            long product_id = orderCreationDTO.getOrderProductDTOList().get(i).getId();
 
-            // check if product in order existed in cart of user
-//            Cart cart = cartRepository.findByProductId(product_id);
-//            if (Objects.equals(cart, null) && !Objects.equals(cart.getUser(), user)) {
-//                throw new ResourceNotFoundException(
-//                        Collections.singletonMap("Not found", product_id));
-//            }
+            if(!Objects.equals(memory_name, cartDetailsList.get(i).getMemory().getName())){
+                throw new ResourceNotFoundException(Collections.singletonMap("Memory of product not in cart",memory_name));
+            }
+
+            if(!Objects.equals(seri_name, cartDetailsList.get(i).getSeri().getName())){
+                throw new ResourceNotFoundException(Collections.singletonMap("Seri of product not in cart" , seri_name));
+            }
+
+            String product_name = orderCreationDTO.getOrderProductDTOList().get(i).getName();
 
             OrderDetails orderDetails = orderMapper.toDetailEnity(orderDetailDTO);
+            orderDetails.setQuantity((int)orderCreationDTO.getOrderProductDTOList().get(i).getQuantity());
 
-            int order_product_quantity = (int)orderCreationDTO.getOrderProductDTOList().get(i).getQuantity();
-            orderDetails.setQuantity(order_product_quantity);
-
-//            if(orderDetails.getQuantity() > cart.getQuantity()){
-//                throw new IllegalArgumentException("Cannot order product with quantity > it in cart");
-//            }
-
-            Memory memory = memoryRepository.findMemoryByNameAndProductId(
-                    memory_name , product_id
+            Memory memory = memoryRepository.findMemoryByNameAndProductName(
+                    memory_name , product_name
             ).orElseThrow(() ->
                     new ResourceNotFoundException(Collections.singletonMap("Not found",memory_name)));
             orderDetails.setMemory(memory);
 
-            Seri seri = seriRepository.findSeriByNameAndProductId(
-                    seri_name , product_id
+            Seri seri = seriRepository.findSeriByNameAndProductName(
+                    seri_name , product_name
             ).orElseThrow((()->
                     new ResourceNotFoundException(Collections.singletonMap("Not found" , seri_name))
                     ));
@@ -158,10 +161,12 @@ public class OrderServiceImpl implements OrderService {
             orderDetails.setAddress(addressRepository.findAddressById(orderCreationDTO.getId_address())
                     .orElse(addressRepository.findDefaultAddress(user.getId())));
 
-            this.orderDetailRepository.save(orderDetails);
+            orderDetailRepository.save(orderDetails);
         }
 
-        this.ordersRepository.save(order);
+        // delete product from cart after ordered
+        cartDetailRepository.deleteAll(cartDetailsList);
+        cartRepository.delete(cart);
 
         return orderDetailDTO;
     }
@@ -360,8 +365,6 @@ public class OrderServiceImpl implements OrderService {
         return new PaginationDTO(showOrderDTOList, page.isFirst(), page.isLast(), page.getTotalPages(),
                 page.getTotalElements(), page.getSize(), page.getNumber());
     }
-
-
     /*
     *  Update order
     **/
@@ -388,7 +391,7 @@ public class OrderServiceImpl implements OrderService {
             updatedOrder.setId(oldOrder.getId());
             updatedOrder.setUser(user);
             Date date = oldOrder.getReceiveDate();
-            updatedOrder.setReceiveDate(oldOrder.getReceiveDate());
+            updatedOrder.setReceiveDate(date);
 
             Promotion updatedPromotion = promotionRepository.findById(orderUpdateDTO.getIdPromotion()).orElseThrow(
                     () -> new ResourceNotFoundException(Collections.singletonMap("Promotion ID",
@@ -426,7 +429,7 @@ public class OrderServiceImpl implements OrderService {
             OrderDTO updatedOrderDTO = orderMapper.toDTO(ordersRepository.save(updatedOrder));
 
             List<OrderDetails> oldOrderDetails = orderDetailRepository.findAllByOrderId(order_id);
-            Long id = oldOrderDetails.get(0).getId();
+            long id = oldOrderDetails.get(0).getId();
             if (!oldOrderDetails.isEmpty()) {
                 oldOrderDetails.forEach(oldOrderDetail -> {
                     orderDetailRepository.deleteById(oldOrderDetail.getId());
@@ -443,9 +446,10 @@ public class OrderServiceImpl implements OrderService {
 
             for (int i = 0; i < orderUpdateDTO.getOrderProductDTOList().size(); i++) {
 
-//                String color = orderUpdateDTO.getOrderProductDTOList().get(i).getColor();
-                String memory = orderUpdateDTO.getOrderProductDTOList().get(i).getMemory();
+                String memory_name = orderUpdateDTO.getOrderProductDTOList().get(i).getMemory();
                 String seri_name = orderUpdateDTO.getOrderProductDTOList().get(i).getSeri();
+                String product_name = orderUpdateDTO.getOrderProductDTOList().get(i).getName();
+
 
                 OrderDetails orderDetails = orderMapper.toDetailEnity(newOrderDetailDTO);
                 orderDetails.setQuantity(ENum.ONE.getValue());
@@ -453,15 +457,8 @@ public class OrderServiceImpl implements OrderService {
                 orderDetails.setAddress(addressRepository.findAddressById(orderUpdateDTO.getIdAddress())
                         .orElse(addressRepository.findDefaultAddress(userID)));
 
-//                orderDetails.setColor(
-//                        colorRepository.findColorByNameAndProductId(
-//                                color,
-//                                orderUpdateDTO.getOrderProductDTOList().get(i).getId()).orElseThrow(
-//                                () -> new ValidationException(Collections.singletonMap("color name",
-//                                        color)))
-//                );
-                Seri seri = seriRepository.findSeriByNameAndProductId(
-                        seri_name , orderUpdateDTO.getOrderProductDTOList().get(i).getId()
+                Seri seri = seriRepository.findSeriByNameAndProductName(
+                        seri_name , product_name
                 ).orElseThrow((()->
                         new ResourceNotFoundException(Collections.singletonMap("Not found" , seri_name))
                 ));
@@ -469,11 +466,10 @@ public class OrderServiceImpl implements OrderService {
                 orderDetails.setColor(colorRepository.findByName(seri.getColor().getName()));
 
                 orderDetails.setMemory(
-                        memoryRepository.findMemoryByNameAndProductId(
-                                memory,
-                                orderUpdateDTO.getOrderProductDTOList().get(i).getId()).orElseThrow(
-                                () -> new ValidationException(Collections.singletonMap("memory name",
-                                        memory)))
+                       memoryRepository.findMemoryByNameAndProductName(
+                                memory_name , product_name
+                        ).orElseThrow(() ->
+                                new ResourceNotFoundException(Collections.singletonMap("Not found",memory_name)))
                 );
 
                 orderDetails.setAddress(addressRepository.findAddressById(
@@ -482,6 +478,7 @@ public class OrderServiceImpl implements OrderService {
 
                 orderDetailRepository.save(orderDetails);
             }
+
             return newOrderDetailDTO;
         }
     }
@@ -610,6 +607,4 @@ public class OrderServiceImpl implements OrderService {
 
         return total;
     }
-
-
 }

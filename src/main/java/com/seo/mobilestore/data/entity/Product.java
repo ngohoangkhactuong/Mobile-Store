@@ -49,17 +49,9 @@ public class Product extends Auditable {
     @Column(name = "views")
     private int views = 0;
 
-//    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
-//    @Fetch(FetchMode.SUBSELECT)
-//    private List<ProductTech> productTechs;
-
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     @Fetch(FetchMode.SUBSELECT)
     private List<Seri> series;
-
-//    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
-//    @Fetch(FetchMode.SUBSELECT)
-//    private List<Color> colors;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     @Fetch(FetchMode.SUBSELECT)

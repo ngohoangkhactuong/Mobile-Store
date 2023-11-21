@@ -28,7 +28,6 @@ public class ProductDTO {
     private float star;
 //    private List<ProductTechDTO> productTechDTOs;
     private List<SeriDTO> seriDTOs;
-//    private List<ColorDTO> colorDTOs;
     private List<MemoryDTO> memoryDTOs;
     private List<ReviewDTO> reviewDTOs;
     private List<ImageDTO> imageDTOs;

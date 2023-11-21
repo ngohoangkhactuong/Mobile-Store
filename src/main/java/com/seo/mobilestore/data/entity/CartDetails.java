@@ -26,14 +26,14 @@ public class CartDetails extends Auditable{
     private int quantity;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "seri_id", nullable = false)
+    @JoinColumn(name = "seri_id")
     private Seri seri;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "color_id", nullable = false)
+    @JoinColumn(name = "color_id")
     private Color color;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "memory_id", nullable = false)
+    @JoinColumn(name = "memory_id")
     private Memory memory;
 }

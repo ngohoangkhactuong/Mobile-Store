@@ -22,7 +22,7 @@ public class Seri extends Auditable {
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_id", nullable = false)
+    @JoinColumn(name = "product_id")
     private Product product;
 
     @Column(name = "name", nullable = false, columnDefinition = "NVARCHAR(50)")
@@ -33,6 +33,6 @@ public class Seri extends Auditable {
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "color_id", nullable = false)
+    @JoinColumn(name = "color_id")
     private Color color;
 }

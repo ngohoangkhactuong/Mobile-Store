@@ -1,23 +1,26 @@
 package com.seo.mobilestore.service.impl;
 
 import com.seo.mobilestore.data.dto.PaginationDTO;
-import com.seo.mobilestore.data.dto.product.cart.CartCreationDTO;
-import com.seo.mobilestore.data.dto.product.cart.CartDTO;
-import com.seo.mobilestore.data.dto.product.cart.CartDetailDTO;
-import com.seo.mobilestore.data.dto.product.cart.ShowCartDTO;
+import com.seo.mobilestore.data.dto.cart.*;
+import com.seo.mobilestore.data.dto.product.ShowProductOrderDTO;
 import com.seo.mobilestore.data.entity.*;
 import com.seo.mobilestore.data.mapper.CartMapper;
-import com.seo.mobilestore.data.mapper.UserMapper;
 import com.seo.mobilestore.data.repository.*;
 import com.seo.mobilestore.exception.InternalServerErrorException;
 import com.seo.mobilestore.exception.ResourceNotFoundException;
 import com.seo.mobilestore.service.CartService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityManager;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class CartServiceImpl implements CartService {
@@ -28,11 +31,7 @@ public class CartServiceImpl implements CartService {
     @Autowired
     private CartMapper cartMapper;
     @Autowired
-    private ProductRepository productRepository;
-    @Autowired
     private CartRepository cartRepository;
-    @Autowired
-    private UserMapper userMapper;
     @Autowired
     private MemoryRepository memoryRepository;
     @Autowired
@@ -41,6 +40,8 @@ public class CartServiceImpl implements CartService {
     private ColorRepository colorRepository;
     @Autowired
     private CartDetailRepository cartDetailRepository;
+    @Autowired
+    private EntityManager entityManager;
 
 
     @Override
@@ -55,6 +56,7 @@ public class CartServiceImpl implements CartService {
         cart.setUser(user);
 
         CartDTO cartDTO = cartMapper.toDTO(cartRepository.save(cart));
+        cartDTO.setId(cart.getId());
 // ---------------------------------------------------------------------------------------------------------------------
         CartDetailDTO cartDetailDTO = new CartDetailDTO();
         cartDetailDTO.setCartDTO(cartDTO);
@@ -66,22 +68,20 @@ public class CartServiceImpl implements CartService {
             String memory = cartCreationDTO.getOrderProductDTOList().get(i).getMemory();
             String seri = cartCreationDTO.getOrderProductDTOList().get(i).getSeri();
 
-            long product_id = cartCreationDTO.getOrderProductDTOList().get(i).getId();
+            String product_name = cartCreationDTO.getOrderProductDTOList().get(i).getName();
 
-            CartDetails cartDetails = new CartDetails();
-            cartDetails.setId(cartDetailDTO.getId());
-            cartDetails.setCart(cart);
-            cartDetails.setQuantity((int) cartCreationDTO.getOrderProductDTOList().get(i).getQuantity());
+            CartDetails cartDetails = cartMapper.toDetailEntity(cartDetailDTO);
+            cartDetails.setQuantity((int)cartCreationDTO.getOrderProductDTOList().get(i).getQuantity());
 
             cartDetails.setMemory(
-                    memoryRepository.findMemoryByNameAndProductId(
-                            memory , product_id
+                    memoryRepository.findMemoryByNameAndProductName(
+                            memory , product_name
                     ).orElseThrow(() ->
                             new ResourceNotFoundException(Collections.singletonMap("Not found",memory)))
             );
 
-            Seri SERI = seriRepository.findSeriByNameAndProductId(
-                    seri , product_id
+            Seri SERI = seriRepository.findSeriByNameAndProductName(
+                    seri , product_name
             ).orElseThrow((()->
                     new ResourceNotFoundException(Collections.singletonMap("Not found" , seri))
             ));
@@ -97,41 +97,74 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public ShowCartDTO update(long cart_id , CartCreationDTO cartCreationDTO){
-//        String email = SecurityContextHolder.getContext().getAuthentication().getName();
-//        User user = userRepository.findByEmail(email).orElseThrow(
-//                () -> new InternalServerErrorException(messageSource.getMessage("error.userAuthen",
-//                        null, null)));
-//
-//        // find cart by input cart id
-//        Cart cart = cartRepository.findById(cart_id).orElseThrow(() ->
-//                new ResourceNotFoundException(Collections.singletonMap("Not found", cart_id)));
-//
-//        // check if user of cart is valid
-//        if(user.getId() != cart.getUser().getId()){
-//            throw new InternalServerErrorException(messageSource.getMessage("error.userAuthen",
-//                    null, null));
-//        }
-//
-//
-//        UserDTO userDTO = userMapper.toDTO(user);
-//
-//        ShowCartDTO showCartDTO = new ShowCartDTO();
-//        showCartDTO.setOrderProductDTOList(cartDTO.getOrderProductDTOList());
-//        showCartDTO.setUserDTO(userDTO);
-//
-//        for(ProductOrderDTO productOrderDTO : cartDTO.getOrderProductDTOList()){
-//
-//            cart.setUser(user);
-//            cart.setProduct(productRepository.findById(productOrderDTO.getId()).orElseThrow(() ->
-//                    new ResourceNotFoundException(Collections.singletonMap("Not found", productOrderDTO.getId()))));
-//            cart.setQuantity(productOrderDTO.getQuantity());
-//
-//            this.cartRepository.save(cart);
-//        }
-//
-//        return showCartDTO;
-        return null;
+    public CartDetailDTO update(long cart_id , CartUpdateDTO cartUpdateDTO){
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepository.findByEmail(email).orElseThrow(
+                () -> new InternalServerErrorException(messageSource.getMessage("error.userAuthen",
+                        null, null)));
+        long userID = user.getId();
+
+        // find cart by input cart id
+        Cart oldCart = cartRepository.findById(cart_id).orElseThrow(() ->
+                new ResourceNotFoundException(Collections.singletonMap("Not found", cart_id)));
+
+        // check if user of cart is valid
+        if(userID != oldCart.getUser().getId()){
+            throw new InternalServerErrorException(messageSource.getMessage("error.userAuthen",
+                    null, null));
+        }
+        Cart updateCart = cartMapper.toCartUpdateEntity(cartUpdateDTO);
+        updateCart.setId(oldCart.getId());
+        updateCart.setUser(user);
+
+        CartDTO updateCartDTO = cartMapper.toDTO(cartRepository.save(updateCart));
+
+        List<CartDetails> oldCartDetails = cartDetailRepository.findAllByCartId(cart_id);
+        long id = oldCartDetails.get(0).getId();
+        if(!oldCartDetails.isEmpty()){
+            oldCartDetails.forEach(oldCartDetail -> {
+                cartDetailRepository.deleteById(oldCartDetail.getId());
+            });
+        }
+
+        String tableName = "cart_details";
+        resetAutoIncrement(tableName , id);
+
+        CartDetailDTO newCartDetailDTO = new CartDetailDTO();
+        newCartDetailDTO.setCartDTO(updateCartDTO);
+        newCartDetailDTO.setOrderProductDTOList(cartUpdateDTO.getOrderProductDTOList());
+        newCartDetailDTO.setQuantity(cartUpdateDTO.getOrderProductDTOList().size());
+
+        for(int i = 0; i < cartUpdateDTO.getOrderProductDTOList().size() ; i++){
+
+            String memory = cartUpdateDTO.getOrderProductDTOList().get(i).getMemory();
+            String seri = cartUpdateDTO.getOrderProductDTOList().get(i).getSeri();
+
+            String product_name = cartUpdateDTO.getOrderProductDTOList().get(i).getName();
+
+            CartDetails cartDetails = cartMapper.toDetailEntity(newCartDetailDTO);
+            cartDetails.setQuantity((int)cartUpdateDTO.getOrderProductDTOList().get(i).getQuantity());
+
+            cartDetails.setMemory(
+                    memoryRepository.findMemoryByNameAndProductName(
+                            memory , product_name
+                    ).orElseThrow(() ->
+                            new ResourceNotFoundException(Collections.singletonMap("Not found",memory)))
+            );
+
+            Seri SERI = seriRepository.findSeriByNameAndProductName(
+                    seri , product_name
+            ).orElseThrow((()->
+                    new ResourceNotFoundException(Collections.singletonMap("Not found" , seri))
+            ));
+            cartDetails.setSeri(SERI);
+
+            Color color = colorRepository.findByName(SERI.getColor().getName());
+            cartDetails.setColor(color);
+
+            cartDetailRepository.save(cartDetails);
+        }
+        return newCartDetailDTO;
     }
 
     @Override
@@ -153,19 +186,81 @@ public class CartServiceImpl implements CartService {
         return true;
     }
 
+    @Override
     public PaginationDTO getAllPagination(int no, int limit){
-//        String email = SecurityContextHolder.getContext().getAuthentication().getName();
-//        User user = userRepository.findByEmail(email).orElseThrow(
-//                () -> new InternalServerErrorException(messageSource.getMessage("error.userAuthen",
-//                        null, null)));
-//
-//        Page<ShowCartDTO> page = this.cartRepository.findByUserId(user.getId(),
-//                PageRequest.of(no, limit)).map(item -> cartMapper.toShowDTO(item));
-//
-//        return new PaginationDTO(page.getContent(), page.isFirst(), page.isLast(),
-//                page.getTotalPages(),
-//                page.getTotalElements(), page.getSize(),
-//                page.getNumber());
-        return null;
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepository.findByEmail(email).orElseThrow(
+                () -> new InternalServerErrorException(messageSource.getMessage("error.userAuthen",
+                        null, null)));
+
+        Page<Cart> page = cartRepository.findCartByUserId(user.getId(), PageRequest.of(no, limit));
+
+        List<ShowCartDTO> showCartDTOList = page.getContent()
+                .stream().map(this::mapToShowCartDTO)
+                .collect(Collectors.toList());
+
+        return new PaginationDTO(showCartDTOList, page.isFirst(), page.isLast(),
+                page.getTotalPages(),
+                page.getTotalElements(), page.getSize(),
+                page.getNumber());
     }
+
+    private void resetAutoIncrement(String tableName, long nextId) {
+        String query = "ALTER TABLE " + tableName + " AUTO_INCREMENT = " + nextId;
+        entityManager.createNativeQuery(query).executeUpdate();
+    }
+
+    private ShowCartDTO mapToShowCartDTO(Cart cart){
+        ShowCartDTO showCartDTO = new ShowCartDTO();
+        ShowCartDetailDTO showCartDetailDTO = getCartDetailDTO(cart.getId());
+
+        showCartDTO = cartMapper.toShowDTO(cart);
+
+        showCartDTO.setProductOrderDTO(showCartDetailDTO.getOrderProductDTOList());
+        return showCartDTO;
+    }
+
+    public ShowCartDetailDTO getCartDetailDTO(long cart_id){
+        int defaultNum = 0;
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        User user = userRepository.findByEmail(email).orElseThrow(
+                () -> new InternalServerErrorException(messageSource.getMessage("error.userAuthen",
+                        null, null)));
+
+        List<CartDetails> cartDetailsList = new ArrayList<>();
+        cartDetailsList = cartDetailRepository.findAllByCartId(cart_id);
+
+        ShowCartDetailDTO showCartDetailDTO = new ShowCartDetailDTO();
+        if(cartDetailsList.isEmpty()){
+            throw new ResourceNotFoundException(Collections.singletonMap("id", cart_id));
+        }
+
+        List<ShowProductOrderDTO> productOrderDTOList = cartDetailsList.stream()
+                .map(this::mapToProductOrderDTO)
+                .collect(Collectors.toList());
+
+        showCartDetailDTO.setId(cart_id);
+        showCartDetailDTO.setQuantity(cartDetailsList.size());
+        showCartDetailDTO.setCartDTO(cartMapper.toDTO(cartDetailsList.get(defaultNum).getCart()));
+        showCartDetailDTO.setOrderProductDTOList(productOrderDTOList);
+
+        return showCartDetailDTO;
+    }
+
+    private ShowProductOrderDTO mapToProductOrderDTO(CartDetails cartDetails) {
+        Product product = cartDetails.getSeri().getProduct();
+        ShowProductOrderDTO productOrderDTO = new ShowProductOrderDTO();
+
+        productOrderDTO.setSeri(cartDetails.getSeri().getName());
+        productOrderDTO.setMemory(cartDetails.getMemory().getName());
+        productOrderDTO.setId(product.getId());
+        productOrderDTO.setName(product.getName());
+        productOrderDTO.setPrice(product.getPrice());
+        productOrderDTO.setDescription(product.getDescription());
+        productOrderDTO.setImage(product.getImages().get(0).getName());
+
+        return productOrderDTO;
+    }
+
 }
