@@ -69,8 +69,8 @@ public class MemoryServiceImpl implements MemoryService {
             memoryDTOsPrepare.add(memoryMapper.toMemoryDTO(memory));
             if (!memoryDTOs.contains(memoryMapper.toMemoryDTO(memory))){
                 // Update status = false (0) for memory when consumer delete this memory
-                memory.setStatus(false);
-                memoryRepository.save(memory);
+                // memory.setStatus(false);
+                memoryRepository.delete(memory);
             } else {
                 memoryDTOs.forEach(memoryDTO -> {
                     // if memory existed in database, it will be updated then save it

@@ -246,6 +246,7 @@ public class ProductServiceImpl implements ProductService {
         // ProductDTO name equals Old Product name and unique
         productUpdateResult = productRepository.save(productUpdated);
 
+
         return updateDTOsForProduct(productUpdateResult, productCreationDTO);
     }
 
@@ -269,8 +270,6 @@ public class ProductServiceImpl implements ProductService {
                 }
             }
         }
-
-
         // set lists DTO for productDTO view
         productDTOResult.setImageDTOs(imageDTOs);
         productDTOResult.setMemoryDTOs(memoryDTOs);
