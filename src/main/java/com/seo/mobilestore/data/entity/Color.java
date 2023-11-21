@@ -22,5 +22,4 @@ public class Color extends Auditable{
 
     @Column(name = "status")
     private boolean status = true;
-
 }

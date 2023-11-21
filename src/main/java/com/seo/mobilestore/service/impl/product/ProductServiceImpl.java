@@ -104,7 +104,7 @@ public class ProductServiceImpl implements ProductService {
             errors.put("product name", productCreationDTO.getName());
         }
 
-        checkInputProductDTO(errors, productCreationDTO);
+//        checkInputProductDTO(errors, productCreationDTO);
 
         Categories categories = categoriesMapper.toEntity(productCreationDTO.getCategoriesDTO());
         product.setCategory(categories);

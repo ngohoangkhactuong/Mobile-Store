@@ -16,6 +16,7 @@ public interface CartMapper {
     CartDTO toDTO(Cart cart);
 
     @Mapping(source = "user" , target = "userDTO")
+    @Mapping(source = "id" , target = "cart_id")
     ShowCartDTO toShowDTO(Cart cart);
 
     @Mapping(source = "cartDTO", target = "cart")

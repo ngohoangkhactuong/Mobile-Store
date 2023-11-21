@@ -17,7 +17,7 @@ public class Image extends Auditable {
     private long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_id", nullable = false)
+    @JoinColumn(name = "product_id")
     private Product product;
 
     @Column(name = "name", columnDefinition = "NVARCHAR(200)", nullable = false)

@@ -215,8 +215,8 @@ public class CartServiceImpl implements CartService {
         ShowCartDetailDTO showCartDetailDTO = getCartDetailDTO(cart.getId());
 
         showCartDTO = cartMapper.toShowDTO(cart);
-        showCartDTO.setProductOrderDTO(showCartDetailDTO.getOrderProductDTOList().get(0));
 
+        showCartDTO.setProductOrderDTO(showCartDetailDTO.getOrderProductDTOList());
         return showCartDTO;
     }
 
@@ -249,7 +249,6 @@ public class CartServiceImpl implements CartService {
     }
 
     private ShowProductOrderDTO mapToProductOrderDTO(CartDetails cartDetails) {
-        int defaultNum = 0;
         Product product = cartDetails.getSeri().getProduct();
         ShowProductOrderDTO productOrderDTO = new ShowProductOrderDTO();
 
@@ -259,8 +258,9 @@ public class CartServiceImpl implements CartService {
         productOrderDTO.setName(product.getName());
         productOrderDTO.setPrice(product.getPrice());
         productOrderDTO.setDescription(product.getDescription());
-        productOrderDTO.setImage(product.getImages().get(defaultNum).getName());
+        productOrderDTO.setImage(product.getImages().get(0).getName());
 
         return productOrderDTO;
     }
+
 }
