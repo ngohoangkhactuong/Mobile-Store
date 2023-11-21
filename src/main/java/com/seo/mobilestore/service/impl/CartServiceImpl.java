@@ -168,21 +168,22 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public Boolean delete(long cart_id){
+    public Boolean delete(long product_id){
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userRepository.findByEmail(email).orElseThrow(
                 () -> new InternalServerErrorException(messageSource.getMessage("error.userAuthen",
                         null, null)));
 
-        Cart cart = cartRepository.findById(cart_id).orElseThrow(() ->
-                new ResourceNotFoundException(Collections.singletonMap("Not found", cart_id)));
-
+        Cart cart = cartRepository.findCartByUserId(user.getId());
         if(user != cart.getUser()){
             throw new InternalServerErrorException(messageSource.getMessage("error.userAuthen",
                     null, null));
         }
 
-        this.cartRepository.delete(cart);
+        List<CartDetails> cartDetailsList = cartDetailRepository.findAllByCartId(cart.getId());
+
+
+
         return true;
     }
 
@@ -217,6 +218,7 @@ public class CartServiceImpl implements CartService {
         showCartDTO = cartMapper.toShowDTO(cart);
 
         showCartDTO.setProductOrderDTO(showCartDetailDTO.getOrderProductDTOList());
+
         return showCartDTO;
     }
 
@@ -254,6 +256,7 @@ public class CartServiceImpl implements CartService {
 
         productOrderDTO.setSeri(cartDetails.getSeri().getName());
         productOrderDTO.setMemory(cartDetails.getMemory().getName());
+        productOrderDTO.setQuantity(cartDetails.getQuantity());
         productOrderDTO.setId(product.getId());
         productOrderDTO.setName(product.getName());
         productOrderDTO.setPrice(product.getPrice());
