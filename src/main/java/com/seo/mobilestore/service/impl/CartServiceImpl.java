@@ -57,6 +57,7 @@ public class CartServiceImpl implements CartService {
 
         CartDTO cartDTO = cartMapper.toDTO(cartRepository.save(cart));
         cartDTO.setId(cart.getId());
+
 // ---------------------------------------------------------------------------------------------------------------------
         CartDetailDTO cartDetailDTO = new CartDetailDTO();
         cartDetailDTO.setCartDTO(cartDTO);
@@ -105,16 +106,16 @@ public class CartServiceImpl implements CartService {
         long userID = user.getId();
 
         // find cart by input cart id
-        Cart oldCart = cartRepository.findById(cart_id).orElseThrow(() ->
+        Cart updateCart = cartRepository.findById(cart_id).orElseThrow(() ->
                 new ResourceNotFoundException(Collections.singletonMap("Not found", cart_id)));
 
         // check if user of cart is valid
-        if(userID != oldCart.getUser().getId()){
+        if(userID != updateCart.getUser().getId()){
             throw new InternalServerErrorException(messageSource.getMessage("error.userAuthen",
                     null, null));
         }
-        Cart updateCart = cartMapper.toCartUpdateEntity(cartUpdateDTO);
-        updateCart.setId(oldCart.getId());
+
+        updateCart.setId(cart_id);
         updateCart.setUser(user);
 
         CartDTO updateCartDTO = cartMapper.toDTO(cartRepository.save(updateCart));
@@ -164,6 +165,7 @@ public class CartServiceImpl implements CartService {
 
             cartDetailRepository.save(cartDetails);
         }
+
         return newCartDetailDTO;
     }
 
@@ -181,8 +183,11 @@ public class CartServiceImpl implements CartService {
         }
 
         List<CartDetails> cartDetailsList = cartDetailRepository.findAllByCartId(cart.getId());
-
-
+        for(CartDetails cartDetails : cartDetailsList){
+            if(cartDetails.getSeri().getProduct().getId() == product_id){
+                cartDetailRepository.delete(cartDetails);
+            }
+        }
 
         return true;
     }

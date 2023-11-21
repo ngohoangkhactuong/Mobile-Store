@@ -9,6 +9,6 @@ import com.seo.mobilestore.data.dto.cart.ShowCartDTO;
 public interface CartService {
     CartDetailDTO create(CartCreationDTO cartCreationDTO);
     CartDetailDTO update(long cart_id , CartUpdateDTO cartUpdateDTO);
-    Boolean delete(long cart_id);
     PaginationDTO getAllPagination(int no, int limit);
+    Boolean delete(long product_id);
 }

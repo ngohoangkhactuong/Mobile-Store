@@ -44,11 +44,10 @@ public class CartController {
 
     @SecurityRequirement(name = "Bearer Authentication")
     @PreAuthorize("hasAuthority('Role_Customer')")
-    @DeleteMapping("/{cart_id}")
-    public ResponseEntity<?> deleteById(@PathVariable long cart_id) {
+    @DeleteMapping("/{product_id}")
+    public ResponseEntity<?> deleteById(@PathVariable long product_id) {
 
-        this.cartService.delete(cart_id);
-
+        this.cartService.delete(product_id);
         return ResponseEntity.ok(messageSource.getMessage("success.deleted", null, null));
     }
 
