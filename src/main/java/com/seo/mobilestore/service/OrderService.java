@@ -13,8 +13,8 @@ public interface OrderService {
 
     boolean deleteOrderByIdUser(long id);
 
-    @Transactional
-    OrderDetailDTO update(long order_id, OrderUpdateDTO orderUpdateDTO);
+//    @Transactional
+//    OrderDetailDTO update(long order_id, OrderUpdateDTO orderUpdateDTO);
 
     PaginationDTO showOrderByUser(int no, int limit);
 

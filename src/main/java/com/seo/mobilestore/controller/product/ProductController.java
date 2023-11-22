@@ -15,6 +15,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.math.BigDecimal;
 import java.util.List;
@@ -42,6 +44,7 @@ public class ProductController {
      */
     @SecurityRequirement(name = "Bearer Authentication")
     @PreAuthorize("hasAuthority('Role_Admin')")
+    @Transactional
     @PostMapping(value = "", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<?> createProduct(@Valid @RequestPart ProductCreationDTO productCreationDTO,
                                            @RequestPart(name = "fileImages", required = false)
@@ -55,6 +58,7 @@ public class ProductController {
      */
     @SecurityRequirement(name = "Bearer Authentication")
     @PreAuthorize("hasAuthority('Role_Admin')")
+    @Transactional
     @PutMapping(value = "/{id}", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<?> updateProduct(@PathVariable long id, @Valid @RequestPart ProductCreationDTO productCreationDTO,
                                            @RequestPart(name = "fileImages", required = false)

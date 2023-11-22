@@ -368,120 +368,120 @@ public class OrderServiceImpl implements OrderService {
     /*
     *  Update order
     **/
-    public OrderDetailDTO update(long order_id, OrderUpdateDTO orderUpdateDTO) {
-
-        String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        User user = userRepository.findByEmail(email).orElseThrow(
-                () -> new InternalServerErrorException(messageSource.getMessage("error.userAuthen",
-                        null, null)));
-
-        long userID = user.getId();
-
-        Orders oldOrder = ordersRepository.findById(order_id).orElseThrow(
-                () -> new ResourceNotFoundException(Collections.singletonMap("id", order_id))
-        );
-
-        // Check if the authenticated user is authorized to update this order
-        if (oldOrder.getUser().getId() != userID) {
-            throw new InternalServerErrorException(messageSource.getMessage("error.userAuthen",
-                    null, null));
-        } else {
-
-            Orders updatedOrder = orderMapper.toOrderUpdateEntity(orderUpdateDTO);
-            updatedOrder.setId(oldOrder.getId());
-            updatedOrder.setUser(user);
-            Date date = oldOrder.getReceiveDate();
-            updatedOrder.setReceiveDate(date);
-
-            Promotion updatedPromotion = promotionRepository.findById(orderUpdateDTO.getIdPromotion()).orElseThrow(
-                    () -> new ResourceNotFoundException(Collections.singletonMap("Promotion ID",
-                            orderUpdateDTO.getIdPromotion()))
-            );
-            updatedOrder.setPromotion(updatedPromotion);
-            updatedOrder.setStatus(oldOrder.getStatus());
-
-            // Update order payment method
-            // Fetch the corresponding PaymentMethod entity using the payment method name from the orderUpdateDTO
-            if (!oldOrder.getPaymentMethod().getName().equals(EPaymentMethod.Cash.toString()) &&
-                    orderUpdateDTO.getPaymentMethodDTO().equals(EPaymentMethod.Cash.toString())) {
-                throw new IllegalStateException("Update not allowed for non-cash payment method.");
-            } else {
-                String payment_method = orderUpdateDTO.getPaymentMethodDTO();
-                updatedOrder.setPaymentMethod(paymentMethodRepository.
-                        findByName(payment_method).orElseThrow(
-                        () -> new ValidationException(
-                                Collections.singletonMap("payment method", payment_method)))
-                );
-            }
-
-            // Update order payment status based on payment method
-            // If the payment method is not "Cash", set the payment status to true (payment made), otherwise set it to false
-            updatedOrder.setPaymentStatus(!orderUpdateDTO.getPaymentMethodDTO().equals(EPaymentMethod.Cash.toString()));
-
-            BigDecimal total = new BigDecimal(ENum.ZERO.getValue());
-            for (ProductOrderDTO productOrderDTO : orderUpdateDTO.getOrderProductDTOList()) {
-                total = total.add(productOrderDTO.getPrice());
-            }
-            total = totalProduct(total, updatedPromotion.getDiscount(), updatedPromotion.getTotalPurchase(),
-                    updatedPromotion.getMaxGet());
-            updatedOrder.setTotal(total);
-
-            OrderDTO updatedOrderDTO = orderMapper.toDTO(ordersRepository.save(updatedOrder));
-
-            List<OrderDetails> oldOrderDetails = orderDetailRepository.findAllByOrderId(order_id);
-            long id = oldOrderDetails.get(0).getId();
-            if (!oldOrderDetails.isEmpty()) {
-                oldOrderDetails.forEach(oldOrderDetail -> {
-                    orderDetailRepository.deleteById(oldOrderDetail.getId());
-                });
-
-            }
-            String tableName = "order_details";
-            resetAutoIncrement(tableName, id);
-
-            OrderDetailDTO newOrderDetailDTO = new OrderDetailDTO();
-            newOrderDetailDTO.setOrderDTO(updatedOrderDTO);
-            newOrderDetailDTO.setQuantity(orderUpdateDTO.getOrderProductDTOList().size());
-            newOrderDetailDTO.setOrderProductDTOList(orderUpdateDTO.getOrderProductDTOList());
-
-            for (int i = 0; i < orderUpdateDTO.getOrderProductDTOList().size(); i++) {
-
-                String memory_name = orderUpdateDTO.getOrderProductDTOList().get(i).getMemory();
-                String seri_name = orderUpdateDTO.getOrderProductDTOList().get(i).getSeri();
-                String product_name = orderUpdateDTO.getOrderProductDTOList().get(i).getName();
-
-
-                OrderDetails orderDetails = orderMapper.toDetailEnity(newOrderDetailDTO);
-                orderDetails.setQuantity(ENum.ONE.getValue());
-
-                orderDetails.setAddress(addressRepository.findAddressById(orderUpdateDTO.getIdAddress())
-                        .orElse(addressRepository.findDefaultAddress(userID)));
-
-                Seri seri = seriRepository.findSeriByNameAndProductName(
-                        seri_name , product_name
-                ).orElseThrow((()->
-                        new ResourceNotFoundException(Collections.singletonMap("Not found" , seri_name))
-                ));
-                orderDetails.setSeri(seri);
-                orderDetails.setColor(colorRepository.findByName(seri.getColor().getName()));
-
-                orderDetails.setMemory(
-                       memoryRepository.findMemoryByNameAndProductName(
-                                memory_name , product_name
-                        ).orElseThrow(() ->
-                                new ResourceNotFoundException(Collections.singletonMap("Not found",memory_name)))
-                );
-
-                orderDetails.setAddress(addressRepository.findAddressById(
-                        orderUpdateDTO.getIdAddress()).orElse(addressRepository.findDefaultAddress(userID)));
-
-
-                orderDetailRepository.save(orderDetails);
-            }
-
-            return newOrderDetailDTO;
-        }
-    }
+//    public OrderDetailDTO update(long order_id, OrderUpdateDTO orderUpdateDTO) {
+//
+//        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+//        User user = userRepository.findByEmail(email).orElseThrow(
+//                () -> new InternalServerErrorException(messageSource.getMessage("error.userAuthen",
+//                        null, null)));
+//
+//        long userID = user.getId();
+//
+//        Orders oldOrder = ordersRepository.findById(order_id).orElseThrow(
+//                () -> new ResourceNotFoundException(Collections.singletonMap("id", order_id))
+//        );
+//
+//        // Check if the authenticated user is authorized to update this order
+//        if (oldOrder.getUser().getId() != userID) {
+//            throw new InternalServerErrorException(messageSource.getMessage("error.userAuthen",
+//                    null, null));
+//        } else {
+//
+//            Orders updatedOrder = orderMapper.toOrderUpdateEntity(orderUpdateDTO);
+//            updatedOrder.setId(oldOrder.getId());
+//            updatedOrder.setUser(user);
+//            Date date = oldOrder.getReceiveDate();
+//            updatedOrder.setReceiveDate(date);
+//
+//            Promotion updatedPromotion = promotionRepository.findById(orderUpdateDTO.getIdPromotion()).orElseThrow(
+//                    () -> new ResourceNotFoundException(Collections.singletonMap("Promotion ID",
+//                            orderUpdateDTO.getIdPromotion()))
+//            );
+//            updatedOrder.setPromotion(updatedPromotion);
+//            updatedOrder.setStatus(oldOrder.getStatus());
+//
+//            // Update order payment method
+//            // Fetch the corresponding PaymentMethod entity using the payment method name from the orderUpdateDTO
+//            if (!oldOrder.getPaymentMethod().getName().equals(EPaymentMethod.Cash.toString()) &&
+//                    orderUpdateDTO.getPaymentMethodDTO().equals(EPaymentMethod.Cash.toString())) {
+//                throw new IllegalStateException("Update not allowed for non-cash payment method.");
+//            } else {
+//                String payment_method = orderUpdateDTO.getPaymentMethodDTO();
+//                updatedOrder.setPaymentMethod(paymentMethodRepository.
+//                        findByName(payment_method).orElseThrow(
+//                        () -> new ValidationException(
+//                                Collections.singletonMap("payment method", payment_method)))
+//                );
+//            }
+//
+//            // Update order payment status based on payment method
+//            // If the payment method is not "Cash", set the payment status to true (payment made), otherwise set it to false
+//            updatedOrder.setPaymentStatus(!orderUpdateDTO.getPaymentMethodDTO().equals(EPaymentMethod.Cash.toString()));
+//
+//            BigDecimal total = new BigDecimal(ENum.ZERO.getValue());
+//            for (ProductOrderDTO productOrderDTO : orderUpdateDTO.getOrderProductDTOList()) {
+//                total = total.add(productOrderDTO.getPrice());
+//            }
+//            total = totalProduct(total, updatedPromotion.getDiscount(), updatedPromotion.getTotalPurchase(),
+//                    updatedPromotion.getMaxGet());
+//            updatedOrder.setTotal(total);
+//
+//            OrderDTO updatedOrderDTO = orderMapper.toDTO(ordersRepository.save(updatedOrder));
+//
+//            List<OrderDetails> oldOrderDetails = orderDetailRepository.findAllByOrderId(order_id);
+//            long id = oldOrderDetails.get(0).getId();
+//            if (!oldOrderDetails.isEmpty()) {
+//                oldOrderDetails.forEach(oldOrderDetail -> {
+//                    orderDetailRepository.deleteById(oldOrderDetail.getId());
+//                });
+//
+//            }
+//            String tableName = "order_details";
+//            resetAutoIncrement(tableName, id);
+//
+//            OrderDetailDTO newOrderDetailDTO = new OrderDetailDTO();
+//            newOrderDetailDTO.setOrderDTO(updatedOrderDTO);
+//            newOrderDetailDTO.setQuantity(orderUpdateDTO.getOrderProductDTOList().size());
+//            newOrderDetailDTO.setOrderProductDTOList(orderUpdateDTO.getOrderProductDTOList());
+//
+//            for (int i = 0; i < orderUpdateDTO.getOrderProductDTOList().size(); i++) {
+//
+//                String memory_name = orderUpdateDTO.getOrderProductDTOList().get(i).getMemory();
+//                String seri_name = orderUpdateDTO.getOrderProductDTOList().get(i).getSeri();
+//                String product_name = orderUpdateDTO.getOrderProductDTOList().get(i).getName();
+//
+//
+//                OrderDetails orderDetails = orderMapper.toDetailEnity(newOrderDetailDTO);
+//                orderDetails.setQuantity(ENum.ONE.getValue());
+//
+//                orderDetails.setAddress(addressRepository.findAddressById(orderUpdateDTO.getIdAddress())
+//                        .orElse(addressRepository.findDefaultAddress(userID)));
+//
+//                Seri seri = seriRepository.findSeriByNameAndProductName(
+//                        seri_name , product_name
+//                ).orElseThrow((()->
+//                        new ResourceNotFoundException(Collections.singletonMap("Not found" , seri_name))
+//                ));
+//                orderDetails.setSeri(seri);
+//                orderDetails.setColor(colorRepository.findByName(seri.getColor().getName()));
+//
+//                orderDetails.setMemory(
+//                       memoryRepository.findMemoryByNameAndProductName(
+//                                memory_name , product_name
+//                        ).orElseThrow(() ->
+//                                new ResourceNotFoundException(Collections.singletonMap("Not found",memory_name)))
+//                );
+//
+//                orderDetails.setAddress(addressRepository.findAddressById(
+//                        orderUpdateDTO.getIdAddress()).orElse(addressRepository.findDefaultAddress(userID)));
+//
+//
+//                orderDetailRepository.save(orderDetails);
+//            }
+//
+//            return newOrderDetailDTO;
+//        }
+//    }
 
     private void resetAutoIncrement(String tableName, long nextId) {
         String query = "ALTER TABLE " + tableName + " AUTO_INCREMENT = " + nextId;

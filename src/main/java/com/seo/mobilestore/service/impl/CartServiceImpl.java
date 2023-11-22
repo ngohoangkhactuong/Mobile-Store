@@ -192,6 +192,29 @@ public class CartServiceImpl implements CartService {
         return true;
     }
 
+
+    @Override
+    public Boolean clearCart(long cart_id){
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepository.findByEmail(email).orElseThrow(
+                () -> new InternalServerErrorException(messageSource.getMessage("error.userAuthen",
+                        null, null)));
+
+        Cart cart = cartRepository.findCartByUserId(user.getId());
+        if(user != cart.getUser()){
+            throw new InternalServerErrorException(messageSource.getMessage("error.userAuthen",
+                    null, null));
+        }
+
+        List<CartDetails> cartDetailsList = cartDetailRepository.findAllByCartId(cart.getId());
+        for(CartDetails cartDetails : cartDetailsList){
+            if(cartDetails.getCart().getId() == cart_id){
+                cartDetailRepository.delete(cartDetails);
+            }
+        }
+
+        return true;
+    }
     @Override
     public PaginationDTO getAllPagination(int no, int limit){
         String email = SecurityContextHolder.getContext().getAuthentication().getName();

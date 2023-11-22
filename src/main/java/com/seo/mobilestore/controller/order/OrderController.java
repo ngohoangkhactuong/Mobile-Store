@@ -47,13 +47,14 @@ public class OrderController {
         return new ResponseEntity<>(this.orderService.cancelOrder(orderId), HttpStatus.OK);
     }
 
-    @SecurityRequirement(name = "Bearer Authentication")
-    @PreAuthorize("hasAuthority('Role_Customer')")
-    @Transactional
-    @PutMapping("/{order_id}")
-    public ResponseEntity<?> updatedOrders(@PathVariable long order_id, @RequestBody OrderUpdateDTO orderUpdateDTO) {
-        return new ResponseEntity<>(this.orderService.update(order_id, orderUpdateDTO), HttpStatus.CREATED);
-    }
+//    @SecurityRequirement(name = "Bearer Authentication")
+//    @PreAuthorize("hasAuthority('Role_Customer')")
+//    @Transactional
+//    @PutMapping("/{order_id}")
+//    public ResponseEntity<?> updatedOrders(@PathVariable long order_id, @RequestBody OrderUpdateDTO orderUpdateDTO) {
+//        return new ResponseEntity<>(this.orderService.update(order_id, orderUpdateDTO), HttpStatus.CREATED);
+//    }
+
     @SecurityRequirement(name = "Bearer Authentication")
     @PreAuthorize("hasAuthority('Role_Customer')")
     @Transactional

@@ -11,4 +11,6 @@ public interface CartService {
     CartDetailDTO update(long cart_id , CartUpdateDTO cartUpdateDTO);
     PaginationDTO getAllPagination(int no, int limit);
     Boolean delete(long product_id);
+
+    Boolean clearCart(long cart_id);
 }

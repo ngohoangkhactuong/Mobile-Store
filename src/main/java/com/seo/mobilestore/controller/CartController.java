@@ -59,4 +59,13 @@ public class CartController {
 
         return ResponseEntity.ok(cartService.getAllPagination(no, limit));
     }
+
+    @SecurityRequirement(name = "Bearer Authentication")
+    @PreAuthorize("hasAuthority('Role_Customer')")
+    @DeleteMapping("/{cart_id}")
+    public ResponseEntity<?> clearCart(@PathVariable long cart_id) {
+
+        this.cartService.clearCart(cart_id);
+        return ResponseEntity.ok(messageSource.getMessage("success.deleted", null, null));
+    }
 }
