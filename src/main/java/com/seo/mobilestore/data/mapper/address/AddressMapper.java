@@ -18,6 +18,7 @@ public interface AddressMapper {
     @Mapping(source = "defaults", target = "defaults")
     @Mapping(source = "status", target = "status")
     AddressDTO toDTO(Address address);
+    @Mapping(source = "status", target = "status")
     AddressShowDTO toShowDTO(Address address);
 
     @Mapping(source = "location", target = "location")
