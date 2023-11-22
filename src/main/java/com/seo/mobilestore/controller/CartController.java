@@ -62,7 +62,7 @@ public class CartController {
 
     @SecurityRequirement(name = "Bearer Authentication")
     @PreAuthorize("hasAuthority('Role_Customer')")
-    @DeleteMapping("/{cart_id}")
+    @DeleteMapping("/clear/{cart_id}")
     public ResponseEntity<?> clearCart(@PathVariable long cart_id) {
 
         this.cartService.clearCart(cart_id);

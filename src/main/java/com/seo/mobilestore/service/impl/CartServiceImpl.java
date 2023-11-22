@@ -212,6 +212,7 @@ public class CartServiceImpl implements CartService {
                 cartDetailRepository.delete(cartDetails);
             }
         }
+        cartRepository.delete(cart);
 
         return true;
     }

@@ -15,4 +15,5 @@ public class AddressShowDTO {
     private String nameReceiver;
     private boolean defaults;
     private String type;
+    private boolean status;
 }
