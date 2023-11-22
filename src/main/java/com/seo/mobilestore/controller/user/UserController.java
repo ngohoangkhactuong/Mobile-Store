@@ -50,6 +50,7 @@ public class UserController {
      *
      */
     @SecurityRequirement(name = "Bearer Authentication")
+    @Transactional
     @PreAuthorize("isAuthenticated()")
     @PutMapping("{id}")
     public ResponseEntity<?> update(@PathVariable long id,
